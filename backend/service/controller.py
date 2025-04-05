@@ -19,8 +19,18 @@ class LLmanager:
 
     def llmQuery(self, message: str,) -> any:
         # Use the generate function for a one-off prompt
+        prompt = (
+            f"You are an AI that takes a message and rewrites it to sound extremely \"{self.discTwo}\" and \"{self.discOne}\".\n\n"
+            f"The original message is:\n"
+            f"\"{message}\"\n\n"
+            f"Only respond in this exact JSON format:\n"
+            f"```\n"
+            f"{{\n"
+            f"  \"response\": \"<your transformed {self.discTwo} and {self.discOne} version of the message>\"\n"
+            f"}}\n"
+            f"```"
+        )
 
-        prompt = f"Take this message and make it {self.discOne} and {self.discTwo} {message} create only one message and respond only in json"
         # stream is used to define wether items should be streamd one at at time (True) or all in one message (False)
         data = {'model': self.model, 'prompt': prompt, 'stream': False}
 
