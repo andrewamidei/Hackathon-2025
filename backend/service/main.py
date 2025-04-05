@@ -85,6 +85,7 @@ def PostLogin():
     db.connect_to_db()
     db.truncate_table()
     db.add_user(username, password)
+    logging.debug(db.get_users())
     db.close_connection()
 
     response = {
