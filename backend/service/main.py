@@ -18,17 +18,21 @@ db.add_user("bob", "password")
 db.add_user("alice", "password")
 db.add_user("casey", "password")
 
+db.add_co
+
 unit_test = DB_unit_test(db)
 
 print(db.get_users())
 
 db.add_contact(username="bob", contact_username="alice")
+db.add_contact(username="bob", contact_username="alice")
+db.add_contact(username="bob", contact_username="bob")
 db.add_contact(username="bob", contact_username="casey")
 db.add_contact(username="alice", contact_username="bob")
 db.add_contact(username="alice", contact_username="casey")
 db.add_contact(username="casey", contact_username="bob")
 db.add_contact(username="casey", contact_username="alice")
-db.add_contact(username="bob", contact_username="alice")
+
 
 #unit_test.add_user_test("admin", "password")
 

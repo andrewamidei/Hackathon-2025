@@ -65,13 +65,25 @@ class Database:
             self.connection.rollback()
             
             
+    
             
-            
-    def add_contact(self, username, contact_username):
+    def add_contact(self, username:str, contact_username:str) -> int:
+        """
+    This function adds a contact to the username.
+
+    Parameters:
+        username (string): Username of the user's contact where the contact_username is being added.
+        contact_username (string): The contact's user name which is being added to the Username's contact.
+
+    Returns:
+        - -1 - If the username and contact_username are the same.
+        - 0 - If the contact is added successfully.
+        - 1 - If the contact already exists.
+    """
 
         if(username == contact_username):
             print("Cannot add yourself as a contact")
-            return
+            return -1 
         try:
             self.cursor.execute('''
                                 CREATE TABLE IF NOT EXISTS Contacts (
@@ -85,10 +97,14 @@ class Database:
                         ''')
             
             self.cursor.execute('INSERT INTO Contacts (userID, contact_user_id) VALUES ((SELECT userID FROM Users WHERE username = %s), (SELECT userID FROM Users WHERE username = %s))', (username, contact_username))
+            self.cursor.execute('INSERT INTO Contacts (userID, contact_user_id) VALUES ((SELECT userID FROM Users WHERE username = %s), (SELECT userID FROM Users WHERE username = %s))', (contact_username, username))
+
             self.connection.commit()
+            return 0
         except mysql.connector.Error as err:
             print(f"Error: {err}")
             self.connection.rollback()
+            return 1
             
     def get_contacts(self, username):
         try:
