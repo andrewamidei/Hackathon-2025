@@ -68,7 +68,7 @@ def PostQuery():
 
     llm_manager_gpu = LLmanager(model="mistral", url='http://192.168.8.137:11434/api/generate')
     llm_manager_cpu = LLmanager(model="gemma:2b", url='http://192.168.8.137:11435/api/generate')
-    llm_feeder = msg_handler(llm_manager_gpu)
+    llm_feeder = msg_handler(LLM_gpu=llm_manager_gpu, LLM_cpu=llm_manager_cpu)
     llm_feeder.feed("1", prompt)
     llm_feeder.rate("1", rate_prompt)
     response = await llm_feeder.consume()
