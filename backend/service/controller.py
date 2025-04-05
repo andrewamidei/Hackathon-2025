@@ -46,7 +46,21 @@ class LLmanager:
         # Generate the response and send it to the UI
         model = self.model  # local model
         message = "hi there i enjoyed our time"
-        prompt = f"Take this message and filter for our service agents it to make it more {self.discOne} and {self.discTwo} {message} create only one message DO NOT RESPOND TO THE MESSAGE ONLY MAKE IT MORE {self.discOne} and {self.discTwo} dont add an explanation only send back the modified message"
+        prompt = f"""
+          You are an AI that transforms customer messages for internal use.
+
+          Your job is to take the original message below and rewrite it in a way that is more **{self.discOne.upper()}** and **{self.discTwo.upper()}** — while keeping the original meaning of the message the same.
+
+        ⚠️ DO NOT respond to the message. DO NOT comment on it. DO NOT change the meaning.
+
+        Only rephrase the message in a new tone and return the modified version **only**.
+
+        Original Message:
+        "{message}"
+
+        Output:
+        <transformed message only – no explanation, no intro, no formatting>
+        """ 
         url = self.url
 
         response = self.llmQuery(model, prompt, url)
