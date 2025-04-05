@@ -80,12 +80,21 @@ class Database:
                                 )
                         ''')
             
+            self.cursor.execute('SELECT userID FROM Users WHERE username = %s', (username,))
+            
             self.cursor.execute('INSERT INTO Contacts (userID, contact_user_id) VALUES ((SELECT userID FROM Users WHERE username = %s), (SELECT userID FROM Users WHERE username = %s))', (username, contact_username))
             self.connection.commit()
         except mysql.connector.Error as err:
             print(f"Error: {err}")
             self.connection.rollback()
             
+    def get_contacts(self, username):
+        try:
+            self.cursor.execute('SELECT * FROM Contacts')
+            return self.cursor.fetchall()
+        except mysql.connector.Error as err:
+            print(f"Error: {err}")
+            return None
             
             
     def drop_table(self):
