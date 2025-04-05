@@ -54,7 +54,7 @@ def debugDB():
     pass
 
 @server.route('/api/queryllm', methods=['POST'])
-def PostQuery():
+async def PostQuery() :
     # Parse the incoming JSON data
     request_data = request.get_json()
     if not request_data or 'prompt' not in request_data:
