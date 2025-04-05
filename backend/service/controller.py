@@ -17,10 +17,11 @@ class LLmanager:
     def __init__(self, model=MODEL, url=URL):
         self.model = model
         self.url = url
-        self.discOne = "MAD"
-        self.discTwo = "MEAN"
-        self.message = "hello how are you?"
-        self.prompt = (f"make this message sound more {self.discOne} and {self.discTwo} message:{self.message} only provide the modified message ")
+        self.discOne = "Neutral"
+        self.discTwo = "NonOffensive"
+        self.message = "hello"
+        # make this message sound more {self.discOne} and {self.discTwo} message:{self.message} only provide the modified message 
+        self.prompt = (f"hello ")
     def llmQuery(self, message: str,) -> any:
         # Use the generate function for a one-off prompt
         self.message = message
