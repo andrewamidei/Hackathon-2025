@@ -28,7 +28,7 @@ class LLmanager:
             f"Please **transform** the message and return it in the following exact JSON format:\n"
             f"```json\n"
             f"{{\n"
-            f"  \"response\": \"<your transformed {self.discTwo} and {self.discOne} version of the message>\"\n"
+            f"  \"newmessage\": \"<your transformed {self.discTwo} and {self.discOne} version of the message>\"\n"
             f"}}\n"
             f"```"
         )
@@ -46,10 +46,10 @@ class LLmanager:
                 if line:
                     json_line = line.decode('utf-8')
                     response_data = json.loads(json_line)
-                    if response_data['response']:
+                    if response_data['newmessage']:
                         # print(response_data['response'], end='', flush=True)
                         logging.debug(response_data)
-                        return response_data['response']
+                        return response_data['newmessage']
 
     def getDefaultResponse(self) -> any:
         # Generate the response and send it to the UI
