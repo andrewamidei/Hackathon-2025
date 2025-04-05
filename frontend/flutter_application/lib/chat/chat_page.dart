@@ -27,11 +27,11 @@ class ChatView extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Flutter App with Python Backend'),
+        title: Text('{User}'),
       ),
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(12.0),
+          padding: const EdgeInsets.all(10),
           child: Column(
             children: [
               Expanded(
@@ -55,24 +55,33 @@ class ChatView extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 20),
-              SizedBox(
-                // width: 370,
-                child: TextField(
-                  // controller: nameController,
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: '',
-                  ),
-                ),
-              ),
-              const SizedBox(height: 20),
-              Center(
-                child: ElevatedButton(
-                  onPressed: () {
-                    // backendBloc.fetchData();
-                    backendBloc.sendData("Tell me a story");
-                  },
-                  child: Text('Send Message'),
+              Expanded(
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: TextField(
+                        //controller: ,
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(20),
+                            borderSide: BorderSide(
+                                width: 2,
+                                style: BorderStyle.none,
+                            ),
+                          ),
+                          labelText: 'message',
+                        ),
+                      ),
+                    ),
+                    SizedBox(width: 10),
+                    IconButton(
+                      icon: Icon(Icons.send, color: Colors.white,),
+                      style: IconButton.styleFrom(backgroundColor: Colors.deepPurple),
+                      onPressed: () {
+                        backendBloc.sendData("hey how are you doing?");
+                      },
+                    ),
+                  ],
                 ),
               ),
             ],
