@@ -25,6 +25,8 @@ class ChatView extends StatelessWidget {
   Widget build(BuildContext context) {
     final backendBloc = BlocProvider.of<ChatBloc>(context);
 
+    
+
     return Scaffold(
       appBar: AppBar(
         title: Text('{User}'),
@@ -62,7 +64,7 @@ class ChatView extends StatelessWidget {
                     children: [
                       Expanded(
                         child: TextField(
-                          controller: backendBloc.messageController, // Attach the controller
+                          controller: backendBloc.messageController,
                           decoration: InputDecoration(
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(20),
