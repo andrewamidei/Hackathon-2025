@@ -104,7 +104,7 @@ class msg_handler:
         rating = self.theJocky.llmQuery(prompt)
         match = re.search(r"\b\d+\b", rating)
         if match:
-            return int(match.group())
+            return str(match.group())
         return None
 
     def consume(self) -> any:
