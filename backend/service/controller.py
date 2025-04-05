@@ -40,7 +40,7 @@ class LLmanager:
             f"Do **not** respond to the message, but instead **convert** it to the new tone as specified.\n\n"
             f"The original message is:\n"
             f"\"{self.message}\"\n\n"
-            f"Only respond in this exact JSON format:\n"
+            f"Create a json object with this format:\n"
             f"```\n"
             f"{{\n"
             f"  \"response\": \"<your transformed {self.discTwo} and {self.discOne} version of the message>\"\n"
