@@ -4,13 +4,18 @@ from flask_cors import CORS
 
 from models.BlogPost import BlogPost, BlogPostVerificationError
 
+
 from database import Database
+from db_unit_test import DB_unit_test
 import mysql.connector
 import logging
 
 db = Database("db-78n9n")
 db.truncate_table()
-db.add_user("admin", "password")
+
+unit_test = DB_unit_test(db)
+unit_test.add_user_test("admin", "password")
+
 print(db.get_users())
 print("Server started")
 
