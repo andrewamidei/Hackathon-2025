@@ -16,6 +16,8 @@ class ChatPage extends StatelessWidget {
   }
 }
 
+
+// This code normally goes in a page with "view" at the end of it rather than page and the stuff above stays
 class ChatView extends StatelessWidget {
   const ChatView({super.key});
 

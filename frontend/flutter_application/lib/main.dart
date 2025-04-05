@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'chat_page.dart';
+import 'chat/chat_page.dart';
+import 'navigation/navigation_page.dart';
 
 void main() {
   runApp(MyApp());
@@ -12,6 +13,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: ChatPage(),
+      //home: NavigationPage(),
     );
   }
 }

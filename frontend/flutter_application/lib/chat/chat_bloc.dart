@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 const String URL_STR = 'http://localhost:8000/api/queryllm';
+
 class BackendBloc extends Cubit<String> {
   BackendBloc() : super('');
 
