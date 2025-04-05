@@ -3,7 +3,7 @@ import os
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 
-
+from database import Database
 from models.BlogPost import BlogPost, BlogPostVerificationError
 from controller import LLmanager
 import mysql.connector
@@ -67,6 +67,33 @@ def PostQuery():
     return jsonify({'response': response}), 200
 
     # return response
+
+
+@server.route('/api/login', methods=['POST'])
+def PostLogin():
+
+    # Parse the incoming JSON data
+    request_data = request.get_json()
+    if not request_data or 'username' not in request_data or 'password' not in request_data:
+        return jsonify({'error': 'Invalid request, "username" and "password" are required'}), 400
+
+    # Extract the username and password from the request
+    username = request_data['username']
+    password = request_data['password']
+
+    db = Database("db-78n9n")
+    db.connect_to_db()
+    db.truncate_table()
+    db.add_user(username, password)
+    db.close_connection()
+
+    response = {
+        'message': 'User added successfully',
+        'username': username
+    }
+
+    # Return the response as JSON
+    return jsonify({'response': response}), 200
 
 
 if __name__ == '__main__':
