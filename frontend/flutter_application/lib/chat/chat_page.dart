@@ -10,7 +10,7 @@ class ChatPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => BackendBloc(),
+      create: (context) => ChatBloc(),
       child: ChatView(),
     );
   }
@@ -23,7 +23,7 @@ class ChatView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final backendBloc = BlocProvider.of<BackendBloc>(context);
+    final backendBloc = BlocProvider.of<ChatBloc>(context);
 
     return Scaffold(
       appBar: AppBar(
@@ -43,7 +43,7 @@ class ChatView extends StatelessWidget {
                       delegate: SliverChildBuilderDelegate(
                       childCount: 1, // make 1 copy of everything
                         (BuildContext context, int index) {
-                          return BlocBuilder<BackendBloc, String>(
+                          return BlocBuilder<ChatBloc, String>(
                             builder: (context, state) {
                               return Text(state);
                             },

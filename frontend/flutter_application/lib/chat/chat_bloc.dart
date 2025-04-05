@@ -2,13 +2,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-const String URL_STR = 'http://localhost:8000/api/queryllm';
+const String url = 'http://localhost:8000/api/queryllm';
 
-class BackendBloc extends Cubit<String> {
-  BackendBloc() : super('');
+class ChatBloc extends Cubit<String> {
+  ChatBloc() : super('');
 
   Future<void> fetchData() async {
-    final response = await http.get(Uri.parse(URL_STR));
+    final response = await http.get(Uri.parse(url));
     if (response.statusCode == 200) {
       emit(response.body);
     } else {
@@ -20,7 +20,7 @@ class BackendBloc extends Cubit<String> {
     // just finished making this
     try {
       final response = await http.post(
-        Uri.parse(URL_STR),
+        Uri.parse(url),
         headers:<String, String>{'Content-Type': 'application/json'},
         body: jsonEncode(<String, dynamic>{'model': 'smollm2:135m', 'prompt': prompt}));
 
