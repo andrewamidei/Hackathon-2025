@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\errco\SynologyDrive\Projects\Coding\Flutter\frontend_and_backend\Flutter Frontend\build\windows\x64\CMakeFiles\7e18e932e98530cabbc669c2b36172d7\INSTALL_force.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{C24A4A4C-923D-3FDA-BED6-F9BC6967A0FC}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
