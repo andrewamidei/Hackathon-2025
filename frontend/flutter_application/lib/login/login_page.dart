@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application/chat/chat_bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import "login_bloc.dart";
 
@@ -24,7 +23,7 @@ class LoginView extends StatelessWidget {
 
     @override
     Widget build(BuildContext context) {
-        final backendBloc = BlocProvider.of<LoginBloc>(context);
+        final loginBloc = BlocProvider.of<LoginBloc>(context);
     
     return Scaffold(
       appBar: AppBar(

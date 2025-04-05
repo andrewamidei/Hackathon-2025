@@ -2,7 +2,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-const String url = 'http://localhost:8000/api/queryllm';
+const String url = 'http://192.168.8.137:8080/api/queryllm';
 
 class ChatBloc extends Cubit<String> {
   ChatBloc() : super('');
