@@ -11,10 +11,13 @@ class LLmanager:
     def __init__(self, model: str, url: str):
         self.model = model
         self.url = url
+        self.discOne = "MAD"
+        self.discTwo = "MEAN"
 
-    def llmQuery(self, prompt: str,) -> any:
+    def llmQuery(self, message: str,) -> any:
         # Use the generate function for a one-off prompt
 
+        prompt = f"Take this message and make it {self.discOne} and {self.discTwo} {message} create only one message and respond only in json"
         # stream is used to define wether items should be streamd one at at time (True) or all in one message (False)
         data = {'model': self.model, 'prompt': prompt, 'stream': False}
 
@@ -27,11 +30,12 @@ class LLmanager:
                         # print(response_data['response'], end='', flush=True)
                         return response_data['response']
 
-    def GetDefaultResponse(self) -> any:
+    def getDefaultResponse(self) -> any:
         # Generate the response and send it to the UI
-        model = 'smollm2:135m'  # local model
-        prompt = 'Why is the sky blue? keep your response under one paragraph'
-        url = 'http://localhost:11434/api/generate'
+        model = self.model  # local model
+        message = "hi there i enjoyed our time"
+        prompt = f"Take this message and make it more {self.discOne} and {self.discTwo} {message} create only one message and respond only in json"
+        url = self.url
 
         response = self.llmQuery(model, prompt, url)
 
@@ -40,7 +44,7 @@ class LLmanager:
 
         return response
 
-    def PostNewQuery(self) -> json:
+    def gostNewQuery(self) -> json:
 
         # Parse the incoming JSON data
         request_data = request.get_json()
@@ -57,3 +61,7 @@ class LLmanager:
 
         # Return the response as JSON
         return jsonify({'response': response})
+
+    def setTonality(self, discOne: str, disctwo: str):
+        self.discOne = discOne
+        self.discTwo = disctwo
