@@ -29,10 +29,10 @@ class Database:
         try:
             self.cursor.execute('''
                                 CREATE TABLE IF NOT EXISTS users (
-                                id INT AUTO_INCREMENT PRIMARY KEY, 
+                                userID INT AUTO_INCREMENT PRIMARY KEY, 
                                 username VARCHAR(255), 
                                 password VARCHAR(255),
-                                CONSTRAINT unique_id UNIQUE (id),
+                                CONSTRAINT unique_id UNIQUE (userID),
                                 CONSTRAINT unique_username UNIQUE (username)
                                 )
                         ''')
@@ -42,6 +42,8 @@ class Database:
         except mysql.connector.Error as err:
             print(f"Error: {err}")
             self.connection.rollback()
+    
+    
     
     def get_users(self):
         try:
@@ -58,3 +60,28 @@ class Database:
         except mysql.connector.Error as err:
             print(f"Error: {err}")
             self.connection.rollback()
+            
+            
+            
+            
+    def add_Contact(self, username):
+        try:
+            self.cursor.execute('''
+                                CREATE TABLE IF NOT EXISTS contacts (
+                                contactID INT AUTO_INCREMENT PRIMARY KEY, 
+                                name VARCHAR(255), 
+                                userID INT,
+                                CONSTRAINT FOREIGN KEY (userID) REFERENCES users(userID),
+                                CONSTRAINT unique_id UNIQUE (contactID),
+                                CONSTRAINT unique_name UNIQUE (username)
+                                )
+                        ''')
+            
+            self.cursor.execute('INSERT INTO contacts (name) VALUES (%s)', (username,))
+            self.connection.commit()
+        except mysql.connector.Error as err:
+            print(f"Error: {err}")
+            self.connection.rollback()
+
+            
+    
