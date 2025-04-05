@@ -111,10 +111,37 @@ class Database:
             self.connection.rollback()
             return 1
             
-    def get_contacts(self):
+    def get_contacts(self, username) -> list:
+        """
+        Retrieves a list of contact usernames for a given user.
+        Args:
+            username (str): The username of the user whose contacts are to be retrieved.
+        Returns:
+            list: A list of usernames representing the contacts of the specified user.
+                  Returns an empty list if no contacts are found.
+                  Returns None if a database error occurs.
+        Raises:
+            mysql.connector.Error: If there is an issue executing the database queries.
+        Notes:
+            - This function assumes the existence of two database tables:
+              1. `Users` table with columns `userID` and `username`.
+              2. `Contacts` table with columns `userID` and `contact_user_id`.
+            - If a contact's userID is found in the `Contacts` table but their username
+              cannot be retrieved from the `Users` table, a message is printed to the console.
+        """
         try:
-            self.cursor.execute('SELECT * FROM Contacts')
-            return self.cursor.fetchall()
+            self.cursor.execute('SELECT contact_user_id FROM Contacts WHERE userID = (SELECT userID FROM Users WHERE username = %s)', (username,))
+            contact_user_ids = self.cursor.fetchall()
+
+            contacts = []
+            for user_id in contact_user_ids:
+                self.cursor.execute('SELECT username FROM Users WHERE userID = %s', (user_id[0],))
+                contact_username = self.cursor.fetchone()
+                if contact_username:
+                    contacts.append(contact_username[0])
+                else:
+                    print(f"Contact with userID {user_id[0]} not found.")
+            return contacts
         except mysql.connector.Error as err:
             print(f"Error: {err}")
             return None

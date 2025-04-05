@@ -12,6 +12,7 @@ import logging
 
 db = Database("db-78n9n")
 
+<<<<<<< HEAD
 db.truncate_table()
 db.drop_table()
 
