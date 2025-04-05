@@ -21,11 +21,12 @@ class LLmanager:
         self.discTwo = "MEAN"
         self.message = "hello how are you?"
         self.prompt = (
-            f"You are an AI that takes a message and rewrites it to sound extremely \"{self.discTwo}\" and \"{self.discOne}\".\n\n"
+            f"You are an AI that **converts** a message to sound extremely \"{self.discTwo}\" and \"{self.discOne}\". "
+            f"**Do not respond to the message directly**, but **rewrite it** in the specified tone as instructed.\n\n"
             f"The original message is:\n"
             f"\"{self.message}\"\n\n"
-            f"create a JSON object with this format\n"
-            f"```\n"
+            f"Please **transform** the message and return it in the following exact JSON format:\n"
+            f"```json\n"
             f"{{\n"
             f"  \"response\": \"<your transformed {self.discTwo} and {self.discOne} version of the message>\"\n"
             f"}}\n"
@@ -35,23 +36,11 @@ class LLmanager:
     def llmQuery(self, message: str,) -> any:
         # Use the generate function for a one-off prompt
         self.message = message
-        prompt = (
-            f"You are an AI that takes a message and **rewrites** it to sound extremely \"{self.discTwo}\" and \"{self.discOne}\". "
-            f"Do **not** respond to the message, but instead **convert** it to the new tone as specified.\n\n"
-            f"The original message is:\n"
-            f"\"{self.message}\"\n\n"
-            f"Create a json object with this format:\n"
-            f"```\n"
-            f"{{\n"
-            f"  \"response\": \"<your transformed {self.discTwo} and {self.discOne} version of the message>\"\n"
-            f"}}\n"
-            f"```"
-        )
 
-        logging.debug(prompt)
+
         # stream is used to define wether items should be streamd one at at time (True) or all in one message (False)
-        data = {'model': self.model, 'prompt': prompt, 'stream': False}
-
+        data = {'model': self.model, 'prompt': self.prompt, 'stream': False}
+        logging.debug(self.prompt)
         with requests.post(self.url, json=data, stream=True) as response:
             for line in response.iter_lines():
                 if line:
