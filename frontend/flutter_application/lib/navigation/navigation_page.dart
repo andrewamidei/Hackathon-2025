@@ -1,6 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_application/chat/chat_page.dart';
+import 'package:flutter_application/login/login_page.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'navigation_bloc.dart';
@@ -44,7 +45,7 @@ class MyHome extends StatelessWidget{
                 case 1:
                   return Placeholder();
                 case 2: 
-                  return Placeholder();
+                  return LoginPage();
                 case 3: 
                   return Placeholder();
                 default:
