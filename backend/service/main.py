@@ -62,11 +62,15 @@ def PostQuery():
 
     # Extract the prompt from the request
     prompt = request_data['prompt']
-    message = request_data['message']
+    rate_prompt = request_data['rate_prompt']
+#MODEL = 'mistral'
+#URL = 'http://192.168.8.137:11434/api/generate'
 
-    llm_manager = LLmanager()
-    llm_feeder = msg_handler(llm_manager)
+    llm_manager_gpu = LLmanager(model="mistral", url='http://192.168.8.137:11434/api/generate')
+    llm_manager_cpu = LLmanager(model="gemma:2b", url='http://192.168.8.137:11435/api/generate')
+    llm_feeder = msg_handler(llm_manager_gpu)
     llm_feeder.feed("1", prompt)
+    llm_feeder.rate("1", rate_prompt)
     response = await llm_feeder.consume()
 
     #response = llm_manager.llmQuery(message=prompt)

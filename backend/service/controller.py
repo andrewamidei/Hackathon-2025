@@ -3,21 +3,22 @@ import requests
 import json
 import logging
 import asyncio
+import re
 app = Flask(__name__)
 
 serverip: str = "192.168.8.137"
 
 logging.basicConfig(level=logging.DEBUG)
 
-MODEL = 'mistral'
-URL = 'http://192.168.8.137:11434/api/generate'
+# MODEL = 'mistral'
+# URL = 'http://192.168.8.137:11434/api/generate'
 
 
 class LLmanager:
-    def __init__(self, model=MODEL, url=URL):
+    def __init__(self, model, url):
         self.model = model
         self.url = url
-        
+
     def llmQuery(self, prompt) -> any:
 
         # Use the generate function for a one-off prompt
@@ -52,14 +53,13 @@ class LLmanager:
 
         Output:
         <transformed message only – no explanation, no intro, no formatting>
-        """ 
+        """
         url = self.url
 
         response = self.llmQuery(model, prompt, url)
 
         # data = {'message': response}
         # return jsonify(data)
-
 
         return response
 
@@ -85,11 +85,13 @@ class LLmanager:
         self.discOne = discOne
         self.discTwo = disctwo
 
+
 class msg_handler:
-    def __init__(self, LLM: LLmanager):
+    def __init__(self, LLM_gpu: LLmanager, LLM_cpu: LLmanager):
         self.que = []
         self.compleetedmsgs = {}
-        self.theBeast = LLM
+        self.theBeast = LLM_gpu
+        self.theJocky = LLM_cpu
 
     def feed(self, id: str, msg: str):
         self.que.append({"id": id, "message": msg})
@@ -97,6 +99,13 @@ class msg_handler:
     def hunger(self) -> dict:
         message = self.que.pop(0)
         return message
+
+    async def rate(self, id: str, prompt) -> int | None:
+        rating = await self.theJocky.llmQuery(prompt)
+        match = re.search(r"\b\d+\b", rating)
+        if match:
+            return int(match.group())
+        return None
 
     async def consume(self) -> any:
         while (len(self.que) > 0):
