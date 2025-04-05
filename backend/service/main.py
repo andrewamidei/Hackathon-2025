@@ -62,6 +62,7 @@ def PostQuery():
 
     # Extract the prompt from the request
     prompt = request_data['prompt']
+    message = request_data['message']
 
     llm_manager = LLmanager()
     llm_feeder = msg_handler(llm_manager)
