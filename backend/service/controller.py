@@ -27,12 +27,6 @@ class LLmanager:
             f"The original message is:\n"
             f"\"{self.message}\"\n\n"
             "The goal is to **transform** the message's tone, **not respond** or provide any extra commentary.\n\n"
-            "Please return only the transformed message in this exact JSON format:\n"
-            "```json\n"
-            "{\n"
-            "  \"newmessage\": \"<your transformed version of the message in the tone specified>\"\n"
-            "}\n"
-            "```"
         )
 
     def llmQuery(self, message: str,) -> any:
