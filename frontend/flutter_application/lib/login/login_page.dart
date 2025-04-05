@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application/chat/chat_page.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'login_bloc.dart';
 
@@ -84,6 +85,11 @@ class LoginView extends StatelessWidget {
                                 content: Text('Username or password is incorrect'),
                                 backgroundColor: Colors.red,
                             ),
+                        );
+                    } else {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => const ChatPage()),
                         );
                     }
                 }
