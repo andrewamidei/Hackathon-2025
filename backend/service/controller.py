@@ -5,11 +5,12 @@ import logging
 
 app = Flask(__name__)
 
-serverip: str = "192.168.8.137"
+MODEL = 'deepseek-r1:8b'  # local model
+URL = 'http://192.168.8.137:11434/api/generate'
 
 logging.basicConfig(level=logging.DEBUG)
 class LLmanager:
-    def __init__(self, model: str, url: str):
+    def __init__(self, model= MODEL, url= URL):
         self.model = model
         self.url = url
 
