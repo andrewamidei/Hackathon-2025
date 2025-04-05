@@ -40,7 +40,7 @@ def PostQuery():
 
         # Extract the prompt from the request
         prompt = request_data['prompt']
-        # rate_prompt = request_data['rate_prompt']
+        rate_prompt = request_data['rate_prompt']
     #MODEL = 'mistral'
     #URL = 'http://192.168.8.137:11434/api/generate'
 
@@ -48,12 +48,12 @@ def PostQuery():
         llm_manager_cpu = LLmanager(model="gemma:2b", url='http://192.168.8.137:11435/api/generate')
         llm_feeder = msg_handler(LLM_gpu=llm_manager_gpu, LLM_cpu=llm_manager_cpu)
         llm_feeder.feed("1", prompt)
-        # llm_feeder.rate("1", rate_prompt)
+        score = llm_feeder.rate("1", rate_prompt)
         response =  llm_feeder.consume()
 
         #response = llm_manager.llmQuery(message=prompt)
         # Return the response as JSON
-        return jsonify({'response': response}), 200
+        return jsonify({'response': response ,'score': score}), 200
     except Exception as e:
         logging.error(f"Error in PostQuery: {str(e)}")
         return jsonify({'error': str(e)}), 500
