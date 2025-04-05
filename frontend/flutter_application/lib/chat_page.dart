@@ -1,27 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import "backend_bloc.dart";
+import "chat_bloc.dart";
 
-void main() {
-  runApp(MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class ChatPage extends StatelessWidget {
+  const ChatPage({
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: BlocProvider(
-        create: (context) => BackendBloc(),
-        child: MyWidget(),
-      ),
+    return BlocProvider(
+      create: (context) => BackendBloc(),
+      child: ChatView(),
     );
   }
 }
 
-class MyWidget extends StatelessWidget {
-  const MyWidget({super.key});
+class ChatView extends StatelessWidget {
+  const ChatView({super.key});
 
   @override
   Widget build(BuildContext context) {
