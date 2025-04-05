@@ -80,7 +80,7 @@ class Database:
                                 )
                         ''')
             
-            self.cursor.execute('INSERT INTO contacts (userID, contact_user_id) VALUES (SELECT userID FROM Users WHERE username = %s, SELECT userID FROM Users WHERE username = %s)', (username, contact_username))
+            self.cursor.execute('INSERT INTO contacts (userID, contact_user_id) VALUES ((SELECT userID FROM Users WHERE username = %s), (SELECT userID FROM Users WHERE username = %s))', (username, contact_username))
             self.connection.commit()
         except mysql.connector.Error as err:
             print(f"Error: {err}")

@@ -12,11 +12,19 @@ import logging
 
 db = Database("db-78n9n")
 db.truncate_table()
-db.add_user("admin", "password")
-db.add_user("admin", "password")
-db.add_user("admin1", "password")
+db.add_user("bob", "password")
+db.add_user("alice", "password")
+db.add_user("casey", "password")
 
 unit_test = DB_unit_test(db)
+
+db.add_Contact(username="bob", contact_username="alice")
+db.add_Contact(username="bob", contact_username="casey")
+db.add_Contact(username="alice", contact_username="bob")
+db.add_Contact(username="alice", contact_username="casey")
+db.add_Contact(username="casey", contact_username="bob")
+db.add_Contact(username="casey", contact_username="alice")
+
 #unit_test.add_user_test("admin", "password")
 
 print(db.get_users())
