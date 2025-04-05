@@ -21,14 +21,42 @@ class LLmanager:
         self.discTwo = "Super Nice"
         self.message = "i hate this llm so bad becuase of how stupid it is it makes me supper misrable"
         # make this message sound more {self.discOne} and {self.discTwo} message:{self.message} only provide the modified message 
-        self.prompt = (f"make this message sound more {self.discOne} and {self.discTwo} \"message:{self.message}\" only provide the modified message ")
-    def llmQuery(self, message: str,) -> any:
+        self.prompt = f"""
+          You are an AI that transforms customer messages for internal use.
+
+          Your job is to take the original message below and rewrite it in a way that is more **{self.discOne.upper()}** and **{self.discTwo.upper()}** — while keeping the original meaning of the message the same.
+
+        ⚠️ DO NOT respond to the message. DO NOT comment on it. DO NOT change the meaning.
+
+        Only rephrase the message in a new tone and return the modified version **only**.
+
+        Original Message:
+        "{message}"
+
+        Output:
+        <transformed message only – no explanation, no intro, no formatting>
+        """
+        def llmQuery(self, message: str,) -> any:
 
         # Use the generate function for a one-off prompt
-        self.message = message
+            self.message = message
 
 
-        self.prompt = (f"make this message sound more {self.discOne} and {self.discTwo} \"message:{self.message}\" only provide the modified message ")
+           self.prompt = f"""
+              You are an AI that transforms customer messages for internal use.
+
+              Your job is to take the original message below and rewrite it in a way that is more **{self.discOne.upper()}** and **{self.discTwo.upper()}** — while keeping the original meaning of the message the same.
+
+            ⚠️ DO NOT respond to the message. DO NOT comment on it. DO NOT change the meaning.
+
+            Only rephrase the message in a new tone and return the modified version **only**.
+
+            Original Message:
+            "{message}"
+
+            Output:
+            <transformed message only – no explanation, no intro, no formatting>
+            """
         # stream is used to define wether items should be streamd one at at time (True) or all in one message (False)
         data = {'model': self.model, 'prompt': self.prompt, 'stream': False}
         logging.debug(self.prompt)
