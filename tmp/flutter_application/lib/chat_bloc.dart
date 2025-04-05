@@ -31,7 +31,7 @@ class BackendBloc extends Cubit<String> {
         }
     }
     catch (e) {
-      emit('AI: Failed to connect to the server.');
+      emit('Failed to connect to the server.');
     }
   }
 }
