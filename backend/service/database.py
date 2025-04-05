@@ -48,6 +48,38 @@ class Database:
             print(f"Error: {err}")
             self.connection.rollback()
             return -1
+        
+    def check_username_password(self, username, password) -> int:
+        """
+        This function checks if the username and password are correct.
+        If the username does not exist, it adds the user to the database.
+
+        Parameters:
+            username (string): The username to check.
+            password (string): The password to check.
+        Returns:
+            - 0 - If the username and password are correct.
+            - 1 - If the username and password are incorrect.
+            - 2 - If the username does not exist and is added to the database.
+            - -1 - If there is an error in the database connection or query.
+        Raises:
+            mysql.connector.Error: If there is an issue executing the database queries.
+        """
+
+        try:
+            self.cursor.execute('SELECT COUNT(*) FROM Users WHERE username = %s', (username,))
+            if self.cursor.fetchone()[0] == 0:
+                self.add_user(username, password)
+                return 2
+            self.cursor.execute('SELECT COUNT(*) FROM Users WHERE username = %s AND password = %s', (username, password))
+            if self.cursor.fetchone()[0] == 1:
+                return 0
+            else:
+                print("Invalid username or password.")
+                return 1
+        except mysql.connector.Error as err:
+            print(f"Error: {err}")
+            return -1
     
     
     

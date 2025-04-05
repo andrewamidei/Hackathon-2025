@@ -89,7 +89,7 @@ def PostLogin():
     db = Database('db-78n9n')
     db.connect_to_db()
 
-    if(db.add_user(username, password) != 0):
+    if(db.check_username_password(username, password) != 0):
         logging.warning("User already exists")
         return jsonify({'error': 'Username already exists'}), 400
     
@@ -117,7 +117,9 @@ def PostContacts():
 
     db = Database('db-78n9n')
     db.connect_to_db()
-    db.add_contact(username, contact_username)
+    if(db.add_contact(username, contact_username) != 0):
+        logging.warning("Contact already exists")
+        return jsonify({'error': 'Contact already exists'}), 400
 
     response = {
         'message': 'Contact added successfully',
@@ -127,6 +129,8 @@ def PostContacts():
 
     # Return the response as JSON
     return jsonify({'response': response}), 200
+
+
 
 
 if __name__ == '__main__':
