@@ -28,6 +28,8 @@ class Database:
     def add_user(self, username, password):
         try:
             self.cursor.execute('CREATE TABLE IF NOT EXISTS users (id INT AUTO_INCREMENT PRIMARY KEY, username VARCHAR(255), password VARCHAR(255))')
+            #self.cursor.execute('ALTER TABLE users ADD CONSTRAINT unique_id UNIQUE (id);')
+            self.cursor.execute('ALTER TABLE users ADD CONSTRAINT unique_username UNIQUE (username);')
             self.cursor.execute('INSERT INTO users (username, password) VALUES (%s, %s)', (username, password))
             self.connection.commit()
         except mysql.connector.Error as err:
@@ -41,3 +43,11 @@ class Database:
         except mysql.connector.Error as err:
             print(f"Error: {err}")
             return None
+    
+    def truncate_table(self):
+        try:
+            self.cursor.execute('TRUNCATE TABLE users')
+            self.connection.commit()
+        except mysql.connector.Error as err:
+            print(f"Error: {err}")
+            self.connection.rollback()

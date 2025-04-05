@@ -9,7 +9,9 @@ import mysql.connector
 import logging
 
 db = Database("db-78n9n")
+db.truncate_table()
 db.add_user("admin", "password")
+print(db.get_users())
 print("Server started")
 
 logging.basicConfig(level=logging.DEBUG)
