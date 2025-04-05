@@ -9,7 +9,7 @@ serverip: str = "192.168.8.137"
 
 logging.basicConfig(level=logging.DEBUG)
 
-MODEL = 'llama2:7b-q4'
+MODEL = 'llama2:7b'
 URL = 'http://192.168.8.137:11434/api/generate'
 
 
