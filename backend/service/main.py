@@ -4,9 +4,12 @@ from flask_cors import CORS
 
 from models.BlogPost import BlogPost, BlogPostVerificationError
 
+import database
 import mysql.connector
 import logging
 
+
+print("Server started")
 
 logging.basicConfig(level=logging.DEBUG)
 class DBManager:
@@ -21,6 +24,8 @@ class DBManager:
         )
         pf.close()
         self.cursor = self.connection.cursor()
+
+        
     
     def populate_db(self):
         self.cursor.execute('DROP TABLE IF EXISTS blog')
@@ -89,3 +94,4 @@ def listBlog(post_id):
 
 if __name__ == '__main__':
     server.run()
+
