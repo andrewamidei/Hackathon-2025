@@ -6,7 +6,7 @@ import 'dart:convert';
 import 'message.dart';
 
 const String url = 'http://192.168.8.134:8080/api/chat';
-const String dockerurl = 'http://192.168.8.137:8080/api/chat';
+const String dockerurl = 'http://192.168.8.137:8080/api/queryllm';
 
 class ChatState {
   final List<Message> messages;
@@ -41,8 +41,8 @@ class ChatBloc extends Cubit<ChatState> {
   Timer? _messageCheckTimer;
   
   // TODO: These should come from login/settings
-  String currentUser = 'b';
-  String targetUser = 'a';
+  String currentUser = 'a';
+  String targetUser = 'b';
 
   void _startMessageChecking() {
     // Check for new messages every second
