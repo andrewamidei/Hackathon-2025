@@ -3,6 +3,8 @@ import requests
 import json
 import logging
 
+
+
 app = Flask(__name__)
 
 serverip: str = "192.168.8.137"
@@ -19,29 +21,30 @@ class LLmanager:
         self.url = url
         self.discOne = "Joyfull"
         self.discTwo = "Super Nice"
-        self.message = "i hate this llm so bad becuase of how stupid it is it makes me supper misrable"
-        # make this message sound more {self.discOne} and {self.discTwo} message:{self.message} only provide the modified message 
-        self.prompt = (f"make this message sound more {self.discOne} and {self.discTwo} \"message:{self.message}\" only provide the modified message ")
-    def llmQuery(self, message: str,) -> any:
 
-        # Use the generate function for a one-off prompt
-        self.message = message
+    def llmQuery(self, message: str, sender: str = "") -> str:
+        # Create a context-aware prompt for chat messages
+        prompt = (
+            f"Transform this message to be more {self.discOne} and {self.discTwo}. "
+            f"Message from {sender}: \"{message}\"\n"
+            "Only provide the transformed message without any additional context or explanation."
+        )
 
+        data = {'model': self.model, 'prompt': prompt, 'stream': False}
+        logging.debug(f"Sending prompt to LLM: {prompt}")
 
-        self.prompt = (f"make this message sound more {self.discOne} and {self.discTwo} \"message:{self.message}\" only provide the modified message ")
-        # stream is used to define wether items should be streamd one at at time (True) or all in one message (False)
-        data = {'model': self.model, 'prompt': self.prompt, 'stream': False}
-        logging.debug(self.prompt)
-        with requests.post(self.url, json=data, stream=True) as response:
-            for line in response.iter_lines():
-                if line:
-                    json_line = line.decode('utf-8')
-                    response_data = json.loads(json_line)
-                    if response_data['response']:
-                        # print(response_data['response'], end='', flush=True)
-                        logging.debug(response_data)
-                        return response_data['response']
-
+        try:
+            with requests.post(self.url, json=data, stream=True) as response:
+                for line in response.iter_lines():
+                    if line:
+                        json_line = line.decode('utf-8')
+                        response_data = json.loads(json_line)
+                        if response_data['response']:
+                            return response_data['response'].strip()
+        except Exception as e:
+            logging.error(f"Error in LLM query: {e}")
+            return f"Error processing message: {str(e)}"
+        
     def getDefaultResponse(self) -> any:
         # Generate the response and send it to the UI
         model = self.model  # local model

@@ -6,7 +6,11 @@ from flask_cors import CORS
 from database import Database
 from models.BlogPost import BlogPost, BlogPostVerificationError
 from controller import LLmanager
-import mysql.connector
+from message_queue import MessageQueue, ChatMessage
+from contextlib import contextmanager
+from datetime import datetime
+import threading
+import time
 import logging
 
 
@@ -19,34 +23,56 @@ server = Flask(__name__)
 CORS(server)
 conn = None
 
-# @server.route('/')
-# def listBlogs():
-#     global conn
-#     if not conn:
-#         conn = DBManager(password_file='/run/secrets/db-password')
-#         conn.populate_db()
-#     result = conn.query_blog_posts()
+@contextmanager
+def get_db():
+    db = Database('db-78n9n')
+    try:
+        db.connect_to_db()
+        yield db
+    finally:
+        db.close_connection()
 
-#     if result:
-#         return jsonify(result)
-#     else:
-#         return jsonify({'error': "Error querying blogs."}), 404
+message_queue = MessageQueue()
+llm_manager = LLmanager()
 
-# @server.route('/<int:post_id>')
-# def listBlog(post_id):
-#     global conn
-#     logging.debug(f'Received request for post_id: {post_id}')
-#     if not conn:
-#         conn = DBManager(password_file='/run/secrets/db-password')
-#         conn.populate_db()
+def process_messages():
+    while True:
+        try:
+            message = message_queue.get_next_raw_message()
+            if message:
+                with get_db() as db:
+                    processed_content = llm_manager.llmQuery(
+                        message=message.content,
+                        sender=message.sender
+                    )
+                    
+                    processed_message = ChatMessage(
+                        sender=message.sender,
+                        receiver=message.receiver,
+                        content=processed_content,
+                        timestamp=datetime.now(),
+                        processed=True
+                    )
+                    
+                    db.add_chat(message.sender, message.receiver, processed_content)
+                    message_queue.add_processed_message(processed_message)
+        except Exception as e:
+            logging.error(f"Error processing message: {e}")
+        time.sleep(0.1)
 
-#     result = conn.query_blog_post(post_id=post_id)
+# Start message processing thread
+processing_thread = threading.Thread(target=process_messages, daemon=True)
+processing_thread.start()
 
-#     if result:
-#         return jsonify(result)
-#     else:
-#         return jsonify({'error': "Error querying blog"}), 404
 
+@server.route('/health', methods=['GET'])
+def health_check():
+    try:
+        with get_db() as db:
+            db.get_users()  # Test database connection
+        return jsonify({'status': 'healthy'}), 200
+    except Exception as e:
+        return jsonify({'status': 'unhealthy', 'error': str(e)}), 500
 
 @server.route('/api/debug/database', methods=['GET'])
 def debugDB():
@@ -61,8 +87,6 @@ def PostQuery():
 
     # Extract the prompt from the request
     prompt = request_data['prompt']
-
-    llm_manager = LLmanager()
 
     response = llm_manager.llmQuery(message=prompt)
 
@@ -104,7 +128,7 @@ def PostLogin():
     # Return the response as JSON
     return jsonify({'response': response}), 200
 
-@server.route('/api/contacts ', methods=['POST'])
+@server.route('/api/contacts', methods=['POST'])
 def PostContacts():
     # Parse the incoming JSON data
     request_data = request.get_json()
@@ -131,6 +155,35 @@ def PostContacts():
     return jsonify({'response': response}), 200
 
 
+
+@server.route('/api/chat/send', methods=['POST'])
+def send_message():
+    data = request.get_json()
+    if not all(k in data for k in ['sender', 'receiver', 'content']):
+        return jsonify({'error': 'Missing required fields'}), 400
+    
+    message = ChatMessage(
+        sender=data['sender'],
+        receiver=data['receiver'],
+        content=data['content'],
+        timestamp=datetime.now()
+    )
+    
+    message_queue.add_raw_message(message)
+    return jsonify({'status': 'message queued'}), 200
+
+@server.route('/api/chat/receive/<username>', methods=['GET'])
+def receive_messages(username):
+    messages = message_queue.get_processed_messages(username)
+    return jsonify({
+        'messages': [
+            {
+                'sender': m.sender,
+                'content': m.content,
+                'timestamp': m.timestamp.isoformat()
+            } for m in messages
+        ]
+    }), 200
 
 
 if __name__ == '__main__':
