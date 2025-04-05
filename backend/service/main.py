@@ -6,6 +6,7 @@ from flask_cors import CORS
 from database import Database
 from models.BlogPost import BlogPost, BlogPostVerificationError
 from controller import LLmanager
+from controller import msg_handler
 import mysql.connector
 import logging
 
@@ -63,9 +64,11 @@ def PostQuery():
     prompt = request_data['prompt']
 
     llm_manager = LLmanager()
+    llm_feeder = msg_handler(llm_manager)
+    llm_feeder.feed("1", prompt)
+    response = await llm_feeder.consume()
 
-    response = llm_manager.llmQuery(message=prompt)
-
+    #response = llm_manager.llmQuery(message=prompt)
     # Return the response as JSON
     return jsonify({'response': response}), 200
 
