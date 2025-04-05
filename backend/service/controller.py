@@ -9,7 +9,7 @@ serverip: str = "192.168.8.137"
 
 logging.basicConfig(level=logging.DEBUG)
 
-MODEL = 'gemma3'
+MODEL = 'gemma3:12b'
 URL = 'http://192.168.8.137:11434/api/generate'
 
 
@@ -24,7 +24,7 @@ class LLmanager:
             f"You are an AI that takes a message and rewrites it to sound extremely \"{self.discTwo}\" and \"{self.discOne}\".\n\n"
             f"The original message is:\n"
             f"\"{self.message}\"\n\n"
-            f"Only respond in this exact JSON format:\n"
+            f"create a JSON object with this format\n"
             f"```\n"
             f"{{\n"
             f"  \"response\": \"<your transformed {self.discTwo} and {self.discOne} version of the message>\"\n"
