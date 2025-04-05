@@ -1,5 +1,5 @@
 import os
-
+import asyncio
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 
@@ -11,6 +11,9 @@ import logging
 
 
 logging.basicConfig(level=logging.DEBUG)
+
+
+    
 
 server = Flask(__name__)
 CORS(server)
@@ -79,19 +82,48 @@ def PostLogin():
         return jsonify({'error': 'Invalid request, "username" and "password" are required'}), 400
 
     # Extract the username and password from the request
+    print("Conneting to DB")
+    logging.warning("Conneting to DB")
     username = request_data['username']
     password = request_data['password']
 
-    db = Database("db-78n9n")
+    db = Database('db-78n9n')
     db.connect_to_db()
-    db.truncate_table()
-    db.add_user(username, password)
+
+    if(db.add_user(username, password) != 0):
+        logging.warning("User already exists")
+        return jsonify({'error': 'Username already exists'}), 400
+    
     logging.debug(db.get_users())
-    db.close_connection()
+
 
     response = {
         'message': 'User added successfully',
         'username': username
+    }
+
+    # Return the response as JSON
+    return jsonify({'response': response}), 200
+
+@server.route('/api/contacts ', methods=['POST'])
+def PostContacts():
+    # Parse the incoming JSON data
+    request_data = request.get_json()
+    if not request_data or 'username' not in request_data or 'contact_username' not in request_data:
+        return jsonify({'error': 'Invalid request, "username" and "contact_username" are required'}), 400
+
+    # Extract the username and password from the request
+    username = request_data['username']
+    contact_username = request_data['contact_username']
+
+    db = Database('db-78n9n')
+    db.connect_to_db()
+    db.add_contact(username, contact_username)
+
+    response = {
+        'message': 'Contact added successfully',
+        'username': username,
+        'contact_username': contact_username
     }
 
     # Return the response as JSON

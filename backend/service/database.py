@@ -25,7 +25,7 @@ class Database:
         if self.connection:
             self.connection.close()
     
-    def add_user(self, username, password):
+    def add_user(self, username, password) -> int:
         try:
             self.cursor.execute('''
                             CREATE TABLE IF NOT EXISTS Users (
@@ -40,11 +40,14 @@ class Database:
             if self.cursor.fetchone()[0] == 0:
                 self.cursor.execute('INSERT INTO Users (username, password) VALUES (%s, %s)', (username, password))
                 self.connection.commit()
+                return 0
             else:
                 print("Username already exists. User not added.")
+                return 1
         except mysql.connector.Error as err:
             print(f"Error: {err}")
             self.connection.rollback()
+            return -1
     
     
     
