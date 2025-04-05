@@ -17,9 +17,9 @@ class LLmanager:
     def __init__(self, model=MODEL, url=URL):
         self.model = model
         self.url = url
-        self.discOne = "Neutral"
-        self.discTwo = "NonOffensive"
-        self.message = "hello"
+        self.discOne = "Joyfull"
+        self.discTwo = "Super Nice"
+        self.message = "i hate this llm so bad becuase of how stupid it is it makes me supper misrable"
         # make this message sound more {self.discOne} and {self.discTwo} message:{self.message} only provide the modified message 
         self.prompt = (f"make this message sound more {self.discOne} and {self.discTwo} \"message:{self.message}\" only provide the modified message ")
     def llmQuery(self, message: str,) -> any:
