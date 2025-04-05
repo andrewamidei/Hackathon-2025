@@ -5,12 +5,11 @@ import logging
 
 app = Flask(__name__)
 
-serverip: str = "192.168.8.137"
+MODEL = 'deepseek-r1:8b'  # local model
+URL = 'http://192.168.8.137:11434/api/generate'
 
 logging.basicConfig(level=logging.DEBUG)
 
-MODEL = 'gemma3:4b'
-URL = 'http://192.168.8.137:11434/api/generate'
 
 class LLmanager:
     def __init__(self, model= MODEL, url= URL):
@@ -21,18 +20,8 @@ class LLmanager:
 
     def llmQuery(self, message: str,) -> any:
         # Use the generate function for a one-off prompt
-        prompt = (
-            f"You are an AI that takes a message and rewrites it to sound extremely \"{self.discTwo}\" and \"{self.discOne}\".\n\n"
-            f"The original message is:\n"
-            f"\"{message}\"\n\n"
-            f"Only respond in this exact JSON format:\n"
-            f"```\n"
-            f"{{\n"
-            f"  \"response\": \"<your transformed {self.discTwo} and {self.discOne} version of the message>\"\n"
-            f"}}\n"
-            f"```"
-        )
 
+        prompt = f"Take this message and make it {self.discOne} and {self.discTwo} {message} create only one message and respond only in json"
         # stream is used to define wether items should be streamd one at at time (True) or all in one message (False)
         data = {'model': self.model, 'prompt': prompt, 'stream': False}
 
@@ -78,6 +67,9 @@ class LLmanager:
         # Return the response as JSON
         return jsonify({'response': response})
 
+<<<<<<< HEAD
+=======
     def setTonality(self, discOne: str, disctwo: str):
         self.discOne = discOne
         self.discTwo = disctwo
+>>>>>>> dbdfecaad462c11c686705d8145783f7d9bdd65c
