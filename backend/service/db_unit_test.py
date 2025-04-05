@@ -5,6 +5,7 @@ class DB_unit_test:
     def __init__(self, db):
         self.db = db
         self.db.connect_to_db()
+        #self.db.truncate_table()
     
 
     def add_user_test(self, username, password):

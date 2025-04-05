@@ -37,8 +37,12 @@ class Database:
                                 )
                         ''')
             
-            self.cursor.execute('INSERT INTO users (username, password) VALUES (%s, %s)', (username, password))
-            self.connection.commit()
+            self.cursor.execute('SELECT COUNT(*) FROM users WHERE username = %s', (username,))
+            if self.cursor.fetchone()[0] == 0:
+                self.cursor.execute('INSERT INTO users (username, password) VALUES (%s, %s)', (username, password))
+                self.connection.commit()
+            else:
+                print("Username already exists. User not added.")
         except mysql.connector.Error as err:
             print(f"Error: {err}")
             self.connection.rollback()

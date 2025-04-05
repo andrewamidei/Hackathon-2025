@@ -12,9 +12,12 @@ import logging
 
 db = Database("db-78n9n")
 db.truncate_table()
+db.add_user("admin", "password")
+db.add_user("admin", "password")
+db.add_user("admin1", "password")
 
 unit_test = DB_unit_test(db)
-unit_test.add_user_test("admin", "password")
+#unit_test.add_user_test("admin", "password")
 
 print(db.get_users())
 print("Server started")
