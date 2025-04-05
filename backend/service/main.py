@@ -4,11 +4,8 @@ from flask import Flask, jsonify, request
 from flask_cors import CORS
 
 
-import requests
-import json
-
 from models.BlogPost import BlogPost, BlogPostVerificationError
-
+from controller import LLmanager
 import mysql.connector
 import logging
 
@@ -63,12 +60,14 @@ def PostQuery():
     prompt = request_data['prompt']
 
     model = 'smollm2:135m'  # local model
-    url = 'http://localhost:11434/api/generate'
+    url = 'http://192.168.8.137:11434/api/generate'
 
-    # response = llmQuery(model, prompt, url)
+    llm_manager = LLmanager(model=model, url=url)
+
+    response = llm_manager.llmQuery(prompt=prompt)
 
     # Return the response as JSON
-    return jsonify({'response': response})
+    return jsonify({'response': response}), 200
 
     # return response
 
