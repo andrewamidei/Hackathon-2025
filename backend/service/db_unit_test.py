@@ -48,3 +48,22 @@ class DB_unit_test:
                 except mysql.connector.Error as err:
                     print(f"Error: {err}")
                     print("Contact already exists")
+
+    def add_chats(self, username, contact_username):
+        print("Testing for adding chats with same usernames")
+        for i in range(10):
+            try:
+                self.db.add_chat(username, contact_username, "hello" + str(i))
+                print("Chat added successfully")
+            except mysql.connector.Error as err:
+                print(f"Error: {err}")
+                print("Chat already exists")
+
+        # print("Testing for adding chats with different usernames")
+        # for i in range(5):
+        #     try:
+        #         self.db.add_chat(username + str(i), contact_username + str())
+        #         print("Chat added successfully")
+        #     except mysql.connector.Error as err:
+        #         print(f"Error: {err}")
+        #         print("Chat already exists")

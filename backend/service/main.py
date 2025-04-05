@@ -4,6 +4,7 @@ from flask import Flask, jsonify, request
 from flask_cors import CORS
 
 from database import Database
+from db_unit_test import DB_unit_test
 from models.BlogPost import BlogPost, BlogPostVerificationError
 from controller import LLmanager
 import mysql.connector
@@ -11,7 +12,13 @@ import logging
 
 
 logging.basicConfig(level=logging.DEBUG)
+db = Database('db-78n9n')
+db.connect_to_db()  
 
+unit_test = DB_unit_test(db)
+unit_test.add_chats('bob', 'alice')
+
+print(db.get_chats('bob', 'alice', 20))
 
     
 
@@ -169,14 +176,45 @@ def PostChat():
 
     db = Database('db-78n9n')
     db.connect_to_db()
-    if(db.add_chat(username, contact_username) != 0):
-        logging.warning("Chat already exists")
-        return jsonify({'error': 'Chat already exists'}), 400
+    chat_id = db.add_chat(username, contact_username)
+    if(chat_id < 0):
+        logging.warning("Adding chat failed")
+        return jsonify({'error': 'Adding chat failed'}), 400
 
     response = {
         'message': 'Chat added successfully',
         'username': username,
-        'contact_username': contact_username
+        'contact_username': contact_username,
+        'chat_id': chat_id
+    }
+
+    # Return the response as JSON
+    return jsonify({'response': response}), 200
+
+@server.route('/api/get/chat', methods=['POST'])
+def GetChat():
+
+    # Parse the incoming JSON data
+    request_data = request.get_json()
+    if not request_data or 'username' not in request_data or 'contact_username' not in request_data:
+        return jsonify({'error': 'Invalid request, "username" and "contact_username" are required'}), 400
+
+    # Extract the username and password from the request
+    username = request_data['username']
+    contact_username = request_data['contact_username']
+    last_seen_id = request_data['last_seen_id'] if 'last_seen_id' in request_data else 0
+    logging.debug(f"Last seen id: {last_seen_id}")
+
+    db = Database('db-78n9n')
+    db.connect_to_db()
+    chat = db.get_chats(username, contact_username, last_seen_id)
+
+    if chat is None:
+        logging.warning("Error getting chat")
+        return jsonify({'error': 'Error getting chat'}), 400
+
+    response = {
+        'chat': chat
     }
 
     # Return the response as JSON

@@ -215,10 +215,24 @@ class Database:
                         ''')
             
             self.cursor.execute('INSERT INTO Chats (senderID, receiverID, message) VALUES ((SELECT userID FROM Users WHERE username = %s), (SELECT userID FROM Users WHERE username = %s), %s)', (username, contact_username, message))
+            self.cursor.execute('SELECT MAX(chatID) FROM Chats WHERE senderID = (SELECT userID FROM Users WHERE username = %s) AND receiverID = (SELECT userID FROM Users WHERE username = %s) AND message = %s'  , (username, contact_username, message))
+            chat_id = self.cursor.fetchone()[0]
+            print('Chat Id: %s is added successfully', (chat_id))
             self.connection.commit()
+            return chat_id
         except mysql.connector.Error as err:
             print(f"Error: {err}")
             self.connection.rollback()
+            return -1
+    
+    def get_chats(self, username, contact_username, last_seen_id = 0):
+        try:
+            self.cursor.execute('SELECT chatID, message, sent_at FROM Chats WHERE ((senderID = (SELECT userID FROM Users WHERE username = %s) AND receiverID = (SELECT userID FROM Users WHERE username = %s)) OR (senderID = (SELECT userID FROM Users WHERE username = %s) AND receiverID = (SELECT userID FROM Users WHERE username = %s))) AND chatID > %s', (username, contact_username, contact_username, username, last_seen_id))
+            chats = self.cursor.fetchall()
+            return chats
+        except mysql.connector.Error as err:
+            print(f"Error: {err}")
+            return None
 
             
     
