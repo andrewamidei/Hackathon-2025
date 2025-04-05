@@ -26,7 +26,7 @@ class ChatView extends StatelessWidget {
       appBar: AppBar(
         title: BlocBuilder<ChatBloc, ChatState>(
           builder: (context, state) {
-            return Text('Chat as ${chatBloc.currentUser}');
+            return Text('Chatting With ${chatBloc.targetUser}');
           },
         ),
         centerTitle: true,

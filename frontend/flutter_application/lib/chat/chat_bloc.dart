@@ -112,10 +112,10 @@ class ChatBloc extends Cubit<ChatState> {
         final int score = llmResult['score'] as int;
         String messageToSend;
 
-        if (score >= 8) {
+        if (score >= 5) {
           // High aggression - close chat and switch to AI mode
           messageToSend = "Chat has been closed due to aggressive content. Switching to AI chat mode.";
-        } else if (score >= 5) {
+        } else if (score >= 3) {
           // Medium aggression - use LLM formatted message
           messageToSend = llmResult['response'] as String;
         } else {
@@ -137,7 +137,7 @@ class ChatBloc extends Cubit<ChatState> {
           final responseData = jsonDecode(response.body);
           if (responseData['status'] == 'Message sent successfully') {
             // If this was a high aggression message, switch to AI mode after confirming send
-            if (score >= 8) {
+            if (score >= 5) {
               await switchToLLM(true);
             }
             emit(state.copyWith(isLoading: false));
@@ -288,33 +288,42 @@ class ChatBloc extends Cubit<ChatState> {
   }
 
   Future<String?> getTherapyAIResponse(String message) async {
-    String prompt = """
-              You are a therapy ai you get transferred to a client who is very mean.
-              
-              your goal is to support them in their journey to help them with their anger management.
+    String therapyPrompt = """Take this message and respond as a compassionate therapy AI. You are speaking to someone who needs help with anger management.
+Be empathetic, understanding, and professional in your response. Focus on helping them process their emotions and suggest constructive ways to handle their feelings.
+Message: "$message"
 
-              Original Message:
-              "$message" """;
+Only provide your therapeutic response without any additional formatting or explanations.""";
 
     try {
       final response = await http.post(
         Uri.parse(llmUrl),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
-          'prompt': prompt,
-          'botMode': true
+          'prompt': therapyPrompt, 'rate_prompt': "rating"
         })
       );
 
       if (response.statusCode == 200) {
-        Map<String, dynamic> map = jsonDecode(response.body);
-        return map["response"] as String?;
+        final responseBody = response.body;
+        print('Raw response: $responseBody'); // Debug log
+        
+        Map<String, dynamic> map = jsonDecode(responseBody);
+        if (map.containsKey("response")) {
+          final responseText = map["response"];
+          if (responseText != null && responseText.toString().isNotEmpty) {
+            return responseText.toString();
+          }
+        }
+        print('Response structure: ${map.toString()}'); // Debug log
+        return null;
       } else {
         print('Failed to get AI response: ${response.statusCode}');
+        print('Response body: ${response.body}'); // Debug log
         return null;
       }
-    } catch (e) {
+    } catch (e, stackTrace) {
       print('Failed to connect to the LLM server: $e');
+      print('Stack trace: $stackTrace'); // Debug log
       return null;
     }
   }
