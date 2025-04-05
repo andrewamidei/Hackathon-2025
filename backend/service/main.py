@@ -1,5 +1,4 @@
 import os
-import asyncio
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 
@@ -15,47 +14,24 @@ import logging
 logging.basicConfig(level=logging.DEBUG)
 
 
-    
+def run_async(coro):
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+    try:
+        return loop.run_until_complete(coro)
+    finally:
+        loop.close()
 
 server = Flask(__name__)
 CORS(server)
 conn = None
-
-# @server.route('/')
-# def listBlogs():
-#     global conn
-#     if not conn:
-#         conn = DBManager(password_file='/run/secrets/db-password')
-#         conn.populate_db()
-#     result = conn.query_blog_posts()
-
-#     if result:
-#         return jsonify(result)
-#     else:
-#         return jsonify({'error': "Error querying blogs."}), 404
-
-# @server.route('/<int:post_id>')
-# def listBlog(post_id):
-#     global conn
-#     logging.debug(f'Received request for post_id: {post_id}')
-#     if not conn:
-#         conn = DBManager(password_file='/run/secrets/db-password')
-#         conn.populate_db()
-
-#     result = conn.query_blog_post(post_id=post_id)
-
-#     if result:
-#         return jsonify(result)
-#     else:
-#         return jsonify({'error': "Error querying blog"}), 404
-
 
 @server.route('/api/debug/database', methods=['GET'])
 def debugDB():
     pass
 
 @server.route('/api/queryllm', methods=['POST'])
-async def PostQuery():
+def PostQuery():
     try:
         # Parse the incoming JSON data
         request_data = request.get_json()
@@ -73,7 +49,7 @@ async def PostQuery():
         llm_feeder = msg_handler(LLM_gpu=llm_manager_gpu, LLM_cpu=llm_manager_cpu)
         llm_feeder.feed("1", prompt)
         llm_feeder.rate("1", rate_prompt)
-        response = await llm_feeder.consume()
+        response =  llm_feeder.consume()
 
         #response = llm_manager.llmQuery(message=prompt)
         # Return the response as JSON
@@ -94,8 +70,8 @@ def PostLogin():
         return jsonify({'error': 'Invalid request, "username" and "password" are required'}), 400
 
     # Extract the username and password from the request
-    print("Conneting to DB")
-    logging.warning("Conneting to DB")
+    print("Connecting to DB")
+    logging.warning("Connecting to DB")
     username = request_data['username']
     password = request_data['password']
 

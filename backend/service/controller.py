@@ -100,19 +100,19 @@ class msg_handler:
         message = self.que.pop(0)
         return message
 
-    async def rate(self, id: str, prompt) -> int | None:
-        rating = await self.theJocky.llmQuery(prompt)
+    def rate(self, id: str, prompt) -> int | None:
+        rating = self.theJocky.llmQuery(prompt)
         match = re.search(r"\b\d+\b", rating)
         if match:
             return int(match.group())
         return None
 
-    async def consume(self) -> any:
+    def consume(self) -> any:
         while (len(self.que) > 0):
             food: dict = self.hunger()
             id = food["id"]
             subtance = food["message"]
-            chickenJocky = await self.theBeast.llmQuery(subtance)
+            chickenJocky = self.theBeast.llmQuery(subtance)
             self.compleetedmsgs[id] = chickenJocky
             return chickenJocky
 
