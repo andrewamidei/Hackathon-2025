@@ -56,32 +56,35 @@ class ChatView extends StatelessWidget {
               ),
               const SizedBox(height: 20),
               Expanded(
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: TextField(
-                        //controller: ,
-                        decoration: InputDecoration(
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(20),
-                            borderSide: BorderSide(
-                                width: 2,
-                                style: BorderStyle.none,
+                child: Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: TextField(
+                          controller: backendBloc.messageController, // Attach the controller
+                          decoration: InputDecoration(
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(20),
+                              borderSide: BorderSide(
+                                  width: 2,
+                                  style: BorderStyle.none,
+                              ),
                             ),
+                            labelText: 'message',
                           ),
-                          labelText: 'message',
                         ),
                       ),
-                    ),
-                    SizedBox(width: 10),
-                    IconButton(
-                      icon: Icon(Icons.send, color: Colors.white,),
-                      style: IconButton.styleFrom(backgroundColor: Colors.deepPurple),
-                      onPressed: () {
-                        backendBloc.sendData("hey how are you doing?");
-                      },
-                    ),
-                  ],
+                      SizedBox(width: 10),
+                      IconButton(
+                        icon: Icon(Icons.send, color: Colors.white,),
+                        style: IconButton.styleFrom(backgroundColor: Colors.deepPurple),
+                        onPressed: () {
+                          backendBloc.sendData();
+                        },
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ],
