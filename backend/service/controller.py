@@ -4,11 +4,12 @@ import json
 
 app = Flask(__name__)
 
+
 def llmQuery(model, prompt, url='http://localhost:11434/api/generate'):
     # Use the generate function for a one-off prompt
 
     # stream is used to define wether items should be streamd one at at time (True) or all in one message (False)
-    data = {'model': model, 'prompt': prompt, 'stream': False} 
+    data = {'model': model, 'prompt': prompt, 'stream': False}
 
     with requests.post(url, json=data, stream=True) as response:
         for line in response.iter_lines():
@@ -18,6 +19,7 @@ def llmQuery(model, prompt, url='http://localhost:11434/api/generate'):
                 if response_data['response']:
                     # print(response_data['response'], end='', flush=True)
                     return response_data['response']
+
 
 @app.route('/api/data', methods=['GET'])
 def GetDefaultResponse():
@@ -33,9 +35,10 @@ def GetDefaultResponse():
 
     return response
 
+
 @app.route('/api/data', methods=['POST'])
 def PostNewQuery():
-    
+
     # Parse the incoming JSON data
     request_data = request.get_json()
     if not request_data or 'prompt' not in request_data:
@@ -54,9 +57,12 @@ def PostNewQuery():
 
     # return response
 
+
 def main():
     print("Starting the Flask app...")
     app.run(debug=True)
 
+
 if __name__ == "__main__":
     main()
+
