@@ -28,11 +28,11 @@ class Database:
     def add_user(self, username, password):
         try:
             self.cursor.execute('''
-                                CREATE TABLE IF NOT EXISTS Users (
+                            CREATE TABLE IF NOT EXISTS Users (
                                 userID INT AUTO_INCREMENT PRIMARY KEY, 
                                 username VARCHAR(255) NOT NULL , 
                                 password VARCHAR(255) NOT NULL,
-                                CONSTRAINT unique_username UNIQUE (username)
+                                UNIQUE (username)
                                 )
                         ''')
             
@@ -67,7 +67,7 @@ class Database:
             
             
             
-    def add_Contact(self, username, contact_username):
+    def add_contact(self, username, contact_username):
         try:
             self.cursor.execute('''
                                 CREATE TABLE IF NOT EXISTS Contacts (
@@ -80,7 +80,18 @@ class Database:
                                 )
                         ''')
             
-            self.cursor.execute('INSERT INTO contacts (userID, contact_user_id) VALUES ((SELECT userID FROM Users WHERE username = %s), (SELECT userID FROM Users WHERE username = %s))', (username, contact_username))
+            self.cursor.execute('INSERT INTO Contacts (userID, contact_user_id) VALUES ((SELECT userID FROM Users WHERE username = %s), (SELECT userID FROM Users WHERE username = %s))', (username, contact_username))
+            self.connection.commit()
+        except mysql.connector.Error as err:
+            print(f"Error: {err}")
+            self.connection.rollback()
+            
+            
+            
+    def drop_table(self):
+        try:
+            self.cursor.execute('DROP TABLE IF EXISTS Users')
+            self.cursor.execute('DROP TABLE IF EXISTS Contacts')
             self.connection.commit()
         except mysql.connector.Error as err:
             print(f"Error: {err}")
