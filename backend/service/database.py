@@ -50,7 +50,7 @@ class Database:
     
     def get_users(self):
         try:
-            self.cursor.execute('SELECT * FROM users')
+            self.cursor.execute('SELECT userID FROM users WHERE username = \'bob\'')
             return self.cursor.fetchall()
         except mysql.connector.Error as err:
             print(f"Error: {err}")
@@ -80,7 +80,7 @@ class Database:
                                 )
                         ''')
             
-            self.cursor.execute('SELECT userID FROM Users WHERE username = %s', (username,))
+            self.cursor.execute('SELECT * FROM Users WHERE userID = 1')
             
             self.cursor.execute('INSERT INTO Contacts (userID, contact_user_id) VALUES ((SELECT userID FROM Users WHERE username = %s), (SELECT userID FROM Users WHERE username = %s))', (username, contact_username))
             self.connection.commit()

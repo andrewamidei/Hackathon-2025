@@ -18,6 +18,8 @@ db.add_user("casey", "password")
 
 unit_test = DB_unit_test(db)
 
+print(db.get_users())
+
 db.add_contact(username="bob", contact_username="alice")
 db.add_contact(username="bob", contact_username="casey")
 db.add_contact(username="alice", contact_username="bob")
@@ -27,7 +29,7 @@ db.add_contact(username="casey", contact_username="alice")
 
 #unit_test.add_user_test("admin", "password")
 
-print(db.get_users())
+
 
 print("Contacts Table: ")
 print(db.get_contacts("bob"))
