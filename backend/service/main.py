@@ -59,7 +59,7 @@ def PostQuery():
     # Extract the prompt from the request
     prompt = request_data['prompt']
 
-    model = 'smollm2:135m'  # local model
+    model = 'deepseek-r1:8b'  # local model
     url = 'http://192.168.8.137:11434/api/generate'
 
     llm_manager = LLmanager(model=model, url=url)
