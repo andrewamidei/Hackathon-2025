@@ -1,1 +1,0 @@
- C:\\Users\\errco\\SynologyDrive\\Projects\\Coding\\Flutter\\frontend_and_backend\\Flutter\ Frontend\\.dart_tool\\flutter_build\\cd85d0d774d92f7b62fa42cb6613419b\\native_assets.json: 
