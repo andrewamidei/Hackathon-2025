@@ -19,7 +19,7 @@ db.add_user("alice", "password")
 db.add_user("casey", "password")
 
 unit_test = DB_unit_test(db)
-
+print("User Table: ")
 print(db.get_users())
 
 db.add_contact(username="bob", contact_username="alice")
@@ -35,7 +35,9 @@ db.add_contact(username="bob", contact_username="alice")
 
 
 print("Contacts Table: ")
-print(db.get_contacts("bob"))
+print(db.get_contacts())
+
+
 print("Server started")
 
 logging.basicConfig(level=logging.DEBUG)
