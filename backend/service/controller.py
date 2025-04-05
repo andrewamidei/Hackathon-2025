@@ -8,6 +8,8 @@ app = Flask(__name__)
 serverip: str = "192.168.8.137"
 
 logging.basicConfig(level=logging.DEBUG)
+
+
 class LLmanager:
     def __init__(self, model: str, url: str):
         self.model = model
@@ -55,7 +57,7 @@ class LLmanager:
         # Extract the prompt from the request
         prompt = request_data['prompt']
 
-        model = 'deepseek-r1:8b'  # local model
+        model = self.model  # local model
         url = 'http://localhost:11434/api/generate'
 
         response = self.llmQuery(model, prompt, url)
