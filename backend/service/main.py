@@ -11,7 +11,9 @@ import mysql.connector
 import logging
 
 db = Database("db-78n9n")
+
 db.truncate_table()
+db.drop_table()
 db.add_user("bob", "password")
 db.add_user("alice", "password")
 db.add_user("casey", "password")
@@ -26,6 +28,7 @@ db.add_contact(username="alice", contact_username="bob")
 db.add_contact(username="alice", contact_username="casey")
 db.add_contact(username="casey", contact_username="bob")
 db.add_contact(username="casey", contact_username="alice")
+db.add_contact(username="bob", contact_username="alice")
 
 #unit_test.add_user_test("admin", "password")
 

@@ -30,15 +30,15 @@ class Database:
             self.cursor.execute('''
                             CREATE TABLE IF NOT EXISTS Users (
                                 userID INT AUTO_INCREMENT PRIMARY KEY, 
-                                username VARCHAR(255) NOT NULL , 
+                                username VARCHAR(255) NOT NULL, 
                                 password VARCHAR(255) NOT NULL,
                                 UNIQUE (username)
                                 )
                         ''')
             
-            self.cursor.execute('SELECT COUNT(*) FROM users WHERE username = %s', (username,))
+            self.cursor.execute('SELECT COUNT(*) FROM Users WHERE username = %s', (username,))
             if self.cursor.fetchone()[0] == 0:
-                self.cursor.execute('INSERT INTO users (username, password) VALUES (%s, %s)', (username, password))
+                self.cursor.execute('INSERT INTO Users (username, password) VALUES (%s, %s)', (username, password))
                 self.connection.commit()
             else:
                 print("Username already exists. User not added.")
@@ -50,7 +50,7 @@ class Database:
     
     def get_users(self):
         try:
-            self.cursor.execute('SELECT userID FROM users WHERE username = \'bob\'')
+            self.cursor.execute('SELECT * FROM Users')
             return self.cursor.fetchall()
         except mysql.connector.Error as err:
             print(f"Error: {err}")
@@ -68,6 +68,10 @@ class Database:
             
             
     def add_contact(self, username, contact_username):
+
+        if(username == contact_username):
+            print("Cannot add yourself as a contact")
+            return
         try:
             self.cursor.execute('''
                                 CREATE TABLE IF NOT EXISTS Contacts (
@@ -79,8 +83,6 @@ class Database:
                                 UNIQUE (userID, contact_user_id)
                                 )
                         ''')
-            
-            self.cursor.execute('SELECT * FROM Users WHERE userID = 1')
             
             self.cursor.execute('INSERT INTO Contacts (userID, contact_user_id) VALUES ((SELECT userID FROM Users WHERE username = %s), (SELECT userID FROM Users WHERE username = %s))', (username, contact_username))
             self.connection.commit()
