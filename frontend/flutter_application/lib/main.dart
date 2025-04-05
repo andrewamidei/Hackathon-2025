@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'chat/chat_page.dart';
 import 'navigation/navigation_page.dart';
 
 void main() {
@@ -12,8 +11,8 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: ChatPage(),
-      //home: NavigationPage(),
+      // home: ChatPage(),
+      home: NavigationPage(),
     );
   }
 }
