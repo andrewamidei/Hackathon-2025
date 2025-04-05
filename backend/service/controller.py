@@ -1,12 +1,13 @@
 from flask import Flask, jsonify, request
 import requests
 import json
+import logging
 
 app = Flask(__name__)
 
 serverip: str = "192.168.8.137"
 
-
+logging.basicConfig(level=logging.DEBUG)
 class LLmanager:
     def __init__(self, model: str, url: str):
         self.model = model
