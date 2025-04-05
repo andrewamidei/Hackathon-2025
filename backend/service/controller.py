@@ -121,26 +121,4 @@ class LLmanager:
         self.discTwo = disctwo
 
 
-class msg_handler:
-    def __init__(self, LLM: LLmanager):
-        self.que = []
-        self.compleetedmsgs = {}
-        self.theBeast = LLM
-
-    def feed(self, id: str, msg: str):
-        self.que.append({"id": id, "message": msg})
-
-    def hunger(self) -> dict:
-        message = self.que.pop(0)
-        return message
-
-    async def consume(self) -> any:
-        while (len(self.que) > 0):
-            food: dict = self.hunger()
-            id = food["id"]
-            subtance = food["message"]
-            chickenJocky = await self.theBeast.llmQuery(subtance)
-            self.compleetedmsgs[id] = chickenJocky
-            return chickenJocky
-
 
