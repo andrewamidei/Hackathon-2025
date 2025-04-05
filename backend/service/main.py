@@ -65,7 +65,6 @@ def PostQuery():
     llm_manager = LLmanager()
 
     response = llm_manager.llmQuery(message=prompt)
-    logging.debug(LLmanager.prompt)
 
     # Return the response as JSON
     return jsonify({'response': response}), 200

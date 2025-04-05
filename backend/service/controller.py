@@ -9,50 +9,27 @@ serverip: str = "192.168.8.137"
 
 logging.basicConfig(level=logging.DEBUG)
 
-MODEL = 'llama2:7b'
+MODEL = 'gemma3:12b'
 URL = 'http://192.168.8.137:11434/api/generate'
 
 
 class LLmanager:
-    def __init__(self, model= MODEL, url= URL):
+    def __init__(self, model=MODEL, url=URL):
         self.model = model
         self.url = url
-        self.discOne = "MAD"
-        self.discTwo = "MEAN"
-        self.message = "hello how are you?"
-        self.prompt =  (
-            f"You are an AI that takes a message and rewrites it to sound extremely \"{self.discTwo}\" and \"{self.discOne}\".\n\n"
-            f"The original message is:\n"
-            f"\"{self.message}\"\n\n"
-            f"Only respond in this exact JSON format:\n"
-            f"```\n"
-            f"{{\n"
-            f"  \"response\": \"<your transformed {self.discTwo} and {self.discOne} version of the message>\"\n"
-            f"}}\n"
-            f"```"
-        )
-
-
+        self.discOne = "Joyfull"
+        self.discTwo = "Super Nice"
+        self.message = "i hate this llm so bad becuase of how stupid it is it makes me supper misrable"
+        # make this message sound more {self.discOne} and {self.discTwo} message:{self.message} only provide the modified message 
+        self.prompt = (f"make this message sound more {self.discOne} and {self.discTwo} \"message:{self.message}\" only provide the modified message ")
     def llmQuery(self, message: str,) -> any:
         # Use the generate function for a one-off prompt
         self.message = message
-        prompt = (
-            f"You are an AI that takes a message and **rewrites** it to sound extremely \"{self.discTwo}\" and \"{self.discOne}\". "
-            f"Do **not** respond to the message, but instead **convert** it to the new tone as specified.\n\n"
-            f"The original message is:\n"
-            f"\"{self.message}\"\n\n"
-            f"Only respond in this exact JSON format:\n"
-            f"```\n"
-            f"{{\n"
-            f"  \"response\": \"<your transformed {self.discTwo} and {self.discOne} version of the message>\"\n"
-            f"}}\n"
-            f"```"
-        )
 
-        logging.debug(prompt) 
+
         # stream is used to define wether items should be streamd one at at time (True) or all in one message (False)
-        data = {'model': self.model, 'prompt': prompt, 'stream': False}
-
+        data = {'model': self.model, 'prompt': self.prompt, 'stream': False}
+        logging.debug(self.prompt)
         with requests.post(self.url, json=data, stream=True) as response:
             for line in response.iter_lines():
                 if line:
@@ -60,6 +37,7 @@ class LLmanager:
                     response_data = json.loads(json_line)
                     if response_data['response']:
                         # print(response_data['response'], end='', flush=True)
+                        logging.debug(response_data)
                         return response_data['response']
 
     def getDefaultResponse(self) -> any:

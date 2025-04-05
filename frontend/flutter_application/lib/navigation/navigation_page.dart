@@ -37,11 +37,11 @@ class MyHome extends StatelessWidget{
             builder: (context, currentIndex){
               switch(currentIndex){
                 case 0:
-                  return ChatPage();
+                  return LoginPage();
                 case 1:
                   return SettingsPage();
                 case 2: 
-                  return LoginPage();
+                  return ChatPage();
                 case 3: 
                   return Placeholder();
                 default:
@@ -56,8 +56,8 @@ class MyHome extends StatelessWidget{
                 onTap: (index) => bottomNaviBloc.add(BottomNaviEvent.values[index]),
                 items: const [
                   BottomNavigationBarItem(
-                    icon: Icon(Icons.message_rounded),
-                    label: "Chat",
+                    icon: Icon(Icons.login),
+                    label: "Login",
                   ),
                   // BottomNavigationBarItem(
                   //   icon: Icon(Icons.person),
@@ -68,8 +68,8 @@ class MyHome extends StatelessWidget{
                     label: "Settings",
                   ),
                   BottomNavigationBarItem(
-                    icon: Icon(Icons.login),
-                    label: "Login",
+                    icon: Icon(Icons.message_rounded),
+                    label: "Chat",
                   ),
                 ],
               );
