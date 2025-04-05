@@ -5,29 +5,33 @@ import 'dart:async';
 import 'dart:convert';
 import 'message.dart';
 
-const String url = 'http://192.168.8.134:8080/api/chat';
-const String dockerurl = 'http://192.168.8.137:8080/api/queryllm';
+const String chatUrl = 'http://192.168.8.137:8080/api/chat';
+const String llmUrl = 'http://192.168.8.137:8080/api/queryllm';
 
 class ChatState {
   final List<Message> messages;
   final bool isLoading;
   final String? error;
+  final bool botMode;
 
   ChatState({
     required this.messages,
     this.isLoading = false,
     this.error,
+    this.botMode = false,
   });
 
   ChatState copyWith({
     List<Message>? messages,
     bool? isLoading,
     String? error,
+    bool? botMode,
   }) {
     return ChatState(
       messages: messages ?? this.messages,
       isLoading: isLoading ?? this.isLoading,
       error: error,
+      botMode: botMode ?? this.botMode,
     );
   }
 }
@@ -41,8 +45,8 @@ class ChatBloc extends Cubit<ChatState> {
   Timer? _messageCheckTimer;
   
   // TODO: These should come from login/settings
-  String currentUser = 'a';
-  String targetUser = 'b';
+  String currentUser = 'alice';
+  String targetUser = 'bob';
 
   void _startMessageChecking() {
     // Check for new messages every second
@@ -63,7 +67,7 @@ class ChatBloc extends Cubit<ChatState> {
     final message = messageController.text.trim();
     if (message.isEmpty) return;
 
-    // Add message to local state immediately
+    // Add user message to local state immediately
     final newMessage = Message(
       content: message,
       isUser: true,
@@ -79,24 +83,71 @@ class ChatBloc extends Cubit<ChatState> {
     messageController.clear();
 
     try {
-      // Format message using LLM before sending
-      final formattedMessage = await sendMessageToLLM(message);
-      final messageToSend = formattedMessage ?? message; // Use original if formatting fails
+      if (state.botMode) {
+        // In therapy AI mode, get response from therapy AI
+        final aiResponse = await getTherapyAIResponse(message);
+        
+        if (aiResponse == null) {
+          throw Exception('Failed to get AI response');
+        }
 
-      final response = await http.post(
-        Uri.parse(url),
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({
-          'sendAddress': targetUser,
-          'message': messageToSend,
-        }),
-      );
+        final therapyMessage = Message(
+          content: aiResponse,
+          isUser: false,
+          timestamp: DateTime.now(),
+        );
 
-      if (response.statusCode != 200) {
-        throw Exception('Failed to send message');
+        emit(state.copyWith(
+          messages: [...state.messages, therapyMessage],
+          isLoading: false,
+        ));
+      } else {
+        // Normal chat mode with aggression check
+        final llmResult = await sendMessageToLLM(message);
+        
+        if (llmResult == null) {
+          throw Exception('Failed to process message');
+        }
+
+        final int score = llmResult['score'] as int;
+        String messageToSend;
+
+        if (score >= 8) {
+          // High aggression - close chat and switch to AI mode
+          messageToSend = "Chat has been closed due to aggressive content. Switching to AI chat mode.";
+        } else if (score >= 5) {
+          // Medium aggression - use LLM formatted message
+          messageToSend = llmResult['response'] as String;
+        } else {
+          // Low aggression - use original message
+          messageToSend = message;
+        }
+
+        // Send message to chat server
+        final response = await http.post(
+          Uri.parse(chatUrl),
+          headers: {'Content-Type': 'application/json'},
+          body: jsonEncode({
+            'sendAddress': targetUser,
+            'message': messageToSend,
+          }),
+        );
+
+        if (response.statusCode == 200) {
+          final responseData = jsonDecode(response.body);
+          if (responseData['status'] == 'Message sent successfully') {
+            // If this was a high aggression message, switch to AI mode after confirming send
+            if (score >= 8) {
+              await switchToLLM(true);
+            }
+            emit(state.copyWith(isLoading: false));
+          } else {
+            throw Exception('Failed to send message: ${responseData['error'] ?? 'Unknown error'}');
+          }
+        } else {
+          throw Exception('Failed to send message: Server returned ${response.statusCode}');
+        }
       }
-
-      emit(state.copyWith(isLoading: false));
     } catch (e) {
       emit(state.copyWith(
         isLoading: false,
@@ -108,7 +159,7 @@ class ChatBloc extends Cubit<ChatState> {
   Future<void> checkForMessages() async {
     try {
       final response = await http.post(
-        Uri.parse(url),
+        Uri.parse(chatUrl),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
           'username': currentUser,
@@ -118,6 +169,12 @@ class ChatBloc extends Cubit<ChatState> {
       if (response.statusCode == 200) {
         final Map<String, dynamic> data = jsonDecode(response.body);
         final String? message = data['message'];
+        final bool? newBotMode = data['botMode'];
+        
+        // Update bot mode if it changed
+        if (newBotMode != null && newBotMode != state.botMode) {
+          await switchToLLM(newBotMode);
+        }
         
         if (message != null && message != 'No new messages') {
           final newMessage = Message(
@@ -146,46 +203,114 @@ class ChatBloc extends Cubit<ChatState> {
     emit(state.copyWith(messages: [])); // Clear messages when switching users
   }
 
-  Future<String?> sendMessageToLLM(String message) async {
+  Future<Map<String, dynamic>?> sendMessageToLLM(String message) async {
     String discOne = "Happy";
     String discTwo = "Joyful"; 
 
     String prompt = """
-                    You are an AI that transforms customer messages for internal use.
+              You are an AI that transforms customer messages for internal use.
 
-                    Your job is to take the original message below and rewrite it in a way that is more $discOne and $discTwo — while keeping the original meaning of the message the same.
+              Your job is to take the original message below and rewrite it in a way that is more $discOne and $discTwo — while keeping the original meaning of the message the same.
 
-                    ⚠️ DO NOT respond to the message. DO NOT comment on it. DO NOT change the meaning.
+              ⚠️ DO NOT respond to the message. DO NOT comment on it. DO NOT change the meaning.
 
-                    Only rephrase the message in a new tone and return the modified version **only**.
+              Only rephrase the message in a new tone and return the modified version **only**.
 
-                    Original Message:
-                    "$message"
+              Original Message:
+              "$message"
 
-                  Output:
-                  <transformed message only – no explanation, no intro, no formatting>
-                  """;
+              Output:
+              <transformed message only – no explanation, no intro, no formatting>
+              """;
 
     String rating = """You are a classifier.
 
-                    Respond only with a single integer between 0 and 10 representing the aggressiveness of the following message.
+              Respond only with a single integer between 0 and 10 representing the aggressiveness of the following message.
 
-                    DO NOT explain, do not label, do not output anything else. Only give the number.
+              DO NOT explain, do not label, do not output anything else. Only give the number.
 
-                    Message:  "$message" """;
+              Message:  "$message" """;
 
     try {
       final response = await http.post(
-        Uri.parse(dockerurl),
+        Uri.parse(llmUrl),
         headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({'prompt': prompt, 'ratePrompt': rating})
+        body: jsonEncode({'prompt': prompt, 'rate_prompt': rating})
       );
 
       if (response.statusCode == 200) {
         Map<String, dynamic> map = jsonDecode(response.body);
-        return map["response"];
+        final scoreStr = map["score"]?.toString() ?? "0";
+        final score = int.tryParse(scoreStr) ?? 0;
+        
+        return {
+          'response': map["response"] as String? ?? message,
+          'score': score
+        };
       } else {
         print('Failed to format message: ${response.statusCode}');
+        return null;
+      }
+    } catch (e) {
+      print('Failed to connect to the LLM server: $e');
+      return null;
+    }
+  }
+
+  Future<void> switchToLLM(bool isActive) async {
+    if (isActive == state.botMode) return; // No change needed
+
+    emit(state.copyWith(
+      botMode: isActive,
+      messages: [], // Clear messages when switching modes
+      error: null,
+    ));
+
+    if (isActive) {
+      // Stop periodic message checking when in AI mode
+      _messageCheckTimer?.cancel();
+      _messageCheckTimer = null;
+      
+      // Add welcome message for therapy AI mode
+      final welcomeMessage = Message(
+        content: "I understand you might be feeling frustrated. I'm here to listen and help you work through these emotions. Would you like to tell me what's bothering you?",
+        isUser: false,
+        timestamp: DateTime.now(),
+      );
+      
+      emit(state.copyWith(
+        messages: [...state.messages, welcomeMessage],
+      ));
+    } else {
+      // Restart periodic message checking when returning to normal chat
+      _startMessageChecking();
+    }
+  }
+
+  Future<String?> getTherapyAIResponse(String message) async {
+    String prompt = """
+              You are a therapy ai you get transferred to a client who is very mean.
+              
+              your goal is to support them in their journey to help them with their anger management.
+
+              Original Message:
+              "$message" """;
+
+    try {
+      final response = await http.post(
+        Uri.parse(llmUrl),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({
+          'prompt': prompt,
+          'botMode': true
+        })
+      );
+
+      if (response.statusCode == 200) {
+        Map<String, dynamic> map = jsonDecode(response.body);
+        return map["response"] as String?;
+      } else {
+        print('Failed to get AI response: ${response.statusCode}');
         return null;
       }
     } catch (e) {
