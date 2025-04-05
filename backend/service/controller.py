@@ -37,7 +37,8 @@ class LLmanager:
         # Use the generate function for a one-off prompt
         self.message = message
         prompt = (
-            f"You are an AI that takes a message and rewrites it to sound extremely \"{self.discTwo}\" and \"{self.discOne}\".\n\n"
+            f"You are an AI that takes a message and **rewrites** it to sound extremely \"{self.discTwo}\" and \"{self.discOne}\". "
+            f"Do **not** respond to the message, but instead **convert** it to the new tone as specified.\n\n"
             f"The original message is:\n"
             f"\"{self.message}\"\n\n"
             f"Only respond in this exact JSON format:\n"
@@ -47,6 +48,7 @@ class LLmanager:
             f"}}\n"
             f"```"
         )
+
         logging.debug(prompt) 
         # stream is used to define wether items should be streamd one at at time (True) or all in one message (False)
         data = {'model': self.model, 'prompt': prompt, 'stream': False}
