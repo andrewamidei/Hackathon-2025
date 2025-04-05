@@ -20,15 +20,7 @@ class LLmanager:
         self.discOne = "MAD"
         self.discTwo = "MEAN"
         self.message = "hello how are you?"
-        self.prompt = (
-            f"You are an AI that **transforms** a message into a different emotional tone. "
-            f"**Do not provide a response** or reply to the original message directly. Instead, you should **rewrite** the message "
-            "to sound extremely **{self.discTwo}** and **{self.discOne}** while **keeping the same meaning** as the original message.\n\n"
-            f"The original message is:\n"
-            f"\"{self.message}\"\n\n"
-            "The goal is to **transform** the message's tone, **not respond** or provide any extra commentary.\n\n"
-        )
-
+        self.prompt = (f"make this message sound more {self.discOne} and {self.discTwo} message:{self.message} only provide the modified message ")
     def llmQuery(self, message: str,) -> any:
         # Use the generate function for a one-off prompt
         self.message = message
