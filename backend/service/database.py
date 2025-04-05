@@ -58,7 +58,10 @@ class Database:
     
     def truncate_table(self):
         try:
-            self.cursor.execute('TRUNCATE TABLE users')
+            self.cursor.execute('TRUNCATE TABLE Chats')
+            self.cursor.execute('TRUNCATE TABLE Contacts')
+            self.cursor.execute('TRUNCATE TABLE Users')
+            
             self.connection.commit()
         except mysql.connector.Error as err:
             print(f"Error: {err}")
@@ -121,6 +124,7 @@ class Database:
         try:
             self.cursor.execute('DROP TABLE IF EXISTS Users')
             self.cursor.execute('DROP TABLE IF EXISTS Contacts')
+            self.cursor.execute('DROP TABLE IF EXISTS Chats')
             self.connection.commit()
         except mysql.connector.Error as err:
             print(f"Error: {err}")
@@ -146,6 +150,15 @@ class Database:
         except mysql.connector.Error as err:
             print(f"Error: {err}")
             self.connection.rollback()
+            
+    
+    def get_chats(self, username, contact_username):
+        try:
+            self.cursor.execute('SELECT * FROM Chats WHERE senderID = (SELECT userID FROM Users WHERE username = %s) AND receiverID = (SELECT userID FROM Users WHERE username = %s)', (username, contact_username))
+            return self.cursor.fetchall()
+        except mysql.connector.Error as err:
+            print(f"Error: {err}")
+            return None
 
             
     

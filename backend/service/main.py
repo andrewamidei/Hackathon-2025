@@ -14,11 +14,12 @@ db = Database("db-78n9n")
 
 db.truncate_table()
 db.drop_table()
+
 db.add_user("bob", "password")
 db.add_user("alice", "password")
 db.add_user("casey", "password")
 
-db.add_co
+
 
 unit_test = DB_unit_test(db)
 print("User Table: ")
@@ -40,6 +41,10 @@ db.add_contact(username="casey", contact_username="alice")
 
 print("Contacts Table: ")
 print(db.get_contacts())
+
+
+db.add_chat(username="bob", contact_username="alice", message="Hello Alice ur a bum!")
+print(db.get_chats(username="bob", contact_username="alice"))
 
 
 print("Server started")
