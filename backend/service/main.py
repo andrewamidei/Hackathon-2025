@@ -4,11 +4,12 @@ from flask_cors import CORS
 
 from models.BlogPost import BlogPost, BlogPostVerificationError
 
-import database
+from database import Database
 import mysql.connector
 import logging
 
-
+db = Database("db-78n9n")
+db.add_user("admin", "password")
 print("Server started")
 
 logging.basicConfig(level=logging.DEBUG)

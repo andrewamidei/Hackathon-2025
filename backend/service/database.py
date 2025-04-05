@@ -1,19 +1,19 @@
 import mysql.connector
 
-class database:
-    def __init__(self, password_file):
-        #self.password_file = password_file
+class Database:
+    def __init__(self, password):
+        self.password = password
         self.connection = None
         self.cursor = None
         self.connect_to_db()
     
-    def connect_to_db(self, password):
+    def connect_to_db(self):
         
         
         self.connection = mysql.connector.connect(
             host='db',
             user='root',
-            password=password,
+            password=self.password,
             database='example',
             auth_plugin='mysql_native_password'
         )
@@ -33,3 +33,11 @@ class database:
         except mysql.connector.Error as err:
             print(f"Error: {err}")
             self.connection.rollback()
+    
+    def get_users(self):
+        try:
+            self.cursor.execute('SELECT * FROM users')
+            return self.cursor.fetchall()
+        except mysql.connector.Error as err:
+            print(f"Error: {err}")
+            return None
