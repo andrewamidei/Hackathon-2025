@@ -24,7 +24,7 @@ class LLmanager:
             f"You are an AI that takes a message and rewrites it to sound extremely \"{self.discTwo}\" and \"{self.discOne}\".\n\n"
             f"The original message is:\n"
             f"\"{self.message}\"\n\n"
-            f"Only respond in this exact JSON format:\n"
+            f"create a JSON object with this format\n"
             f"```\n"
             f"{{\n"
             f"  \"response\": \"<your transformed {self.discTwo} and {self.discOne} version of the message>\"\n"
