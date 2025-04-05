@@ -21,16 +21,18 @@ class LLmanager:
         self.discTwo = "MEAN"
         self.message = "hello how are you?"
         self.prompt = (
-            f"You are an AI that **converts** a message to sound extremely \"{self.discTwo}\" and \"{self.discOne}\". "
-            f"**Do not respond to the message directly**, but **rewrite it** in the specified tone as instructed.\n\n"
+            f"You are an AI that **transforms** a message into a different emotional tone. "
+            f"**Do not provide a response** or reply to the original message directly. Instead, you should **rewrite** the message "
+            "to sound extremely **{self.discTwo}** and **{self.discOne}** while **keeping the same meaning** as the original message.\n\n"
             f"The original message is:\n"
             f"\"{self.message}\"\n\n"
-            f"Please **transform** the message and return it in the following exact JSON format:\n"
-            f"```json\n"
-            f"{{\n"
-            f"  \"newmessage\": \"<your transformed {self.discTwo} and {self.discOne} version of the message>\"\n"
-            f"}}\n"
-            f"```"
+            "The goal is to **transform** the message's tone, **not respond** or provide any extra commentary.\n\n"
+            "Please return only the transformed message in this exact JSON format:\n"
+            "```json\n"
+            "{\n"
+            "  \"newmessage\": \"<your transformed version of the message in the tone specified>\"\n"
+            "}\n"
+            "```"
         )
 
     def llmQuery(self, message: str,) -> any:
