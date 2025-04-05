@@ -8,6 +8,7 @@ from models.BlogPost import BlogPost, BlogPostVerificationError
 from controller import LLmanager
 from controller import msg_handler
 import mysql.connector
+import asyncio
 import logging
 
 
@@ -54,28 +55,32 @@ def debugDB():
     pass
 
 @server.route('/api/queryllm', methods=['POST'])
-async def PostQuery() :
-    # Parse the incoming JSON data
-    request_data = request.get_json()
-    if not request_data or 'prompt' not in request_data:
-        return jsonify({'error': 'Invalid request, "prompt" is required'}), 400
+async def PostQuery():
+    try:
+        # Parse the incoming JSON data
+        request_data = request.get_json()
+        if not request_data or 'prompt' not in request_data:
+            return jsonify({'error': 'Invalid request, "prompt" is required'}), 400
 
-    # Extract the prompt from the request
-    prompt = request_data['prompt']
-    rate_prompt = request_data['rate_prompt']
-#MODEL = 'mistral'
-#URL = 'http://192.168.8.137:11434/api/generate'
+        # Extract the prompt from the request
+        prompt = request_data['prompt']
+        rate_prompt = request_data['rate_prompt']
+    #MODEL = 'mistral'
+    #URL = 'http://192.168.8.137:11434/api/generate'
 
-    llm_manager_gpu = LLmanager(model="mistral", url='http://192.168.8.137:11434/api/generate')
-    llm_manager_cpu = LLmanager(model="gemma:2b", url='http://192.168.8.137:11435/api/generate')
-    llm_feeder = msg_handler(LLM_gpu=llm_manager_gpu, LLM_cpu=llm_manager_cpu)
-    llm_feeder.feed("1", prompt)
-    llm_feeder.rate("1", rate_prompt)
-    response = await llm_feeder.consume()
+        llm_manager_gpu = LLmanager(model="mistral", url='http://192.168.8.137:11434/api/generate')
+        llm_manager_cpu = LLmanager(model="gemma:2b", url='http://192.168.8.137:11435/api/generate')
+        llm_feeder = msg_handler(LLM_gpu=llm_manager_gpu, LLM_cpu=llm_manager_cpu)
+        llm_feeder.feed("1", prompt)
+        llm_feeder.rate("1", rate_prompt)
+        response = await llm_feeder.consume()
 
-    #response = llm_manager.llmQuery(message=prompt)
-    # Return the response as JSON
-    return jsonify({'response': response}), 200
+        #response = llm_manager.llmQuery(message=prompt)
+        # Return the response as JSON
+        return jsonify({'response': response}), 200
+    except Exception as e:
+        logging.error(f"Error in PostQuery: {str(e)}")
+        return jsonify({'error': str(e)}), 500
 
     # return response
 
