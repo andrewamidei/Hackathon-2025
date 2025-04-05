@@ -46,10 +46,10 @@ class LLmanager:
                 if line:
                     json_line = line.decode('utf-8')
                     response_data = json.loads(json_line)
-                    if response_data['newmessage']:
+                    if response_data['response']:
                         # print(response_data['response'], end='', flush=True)
                         logging.debug(response_data)
-                        return response_data['newmessage']
+                        return response_data['response']
 
     def getDefaultResponse(self) -> any:
         # Generate the response and send it to the UI
