@@ -6,11 +6,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'navigation_bloc.dart';
 
-
-// void main(){
-//   runApp(const NavigationPage());
-// }
-
 class NavigationPage extends StatelessWidget{
   const NavigationPage ({super.key});
   
