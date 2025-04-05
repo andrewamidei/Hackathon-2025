@@ -33,7 +33,7 @@ class LLmanager:
             f"}}\n"
             f"```"
         )
-
+        logging.debug(prompt) 
         # stream is used to define wether items should be streamd one at at time (True) or all in one message (False)
         data = {'model': self.model, 'prompt': prompt, 'stream': False}
 
