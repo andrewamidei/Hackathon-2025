@@ -59,6 +59,7 @@ class LLmanager:
                     response_data = json.loads(json_line)
                     if response_data['response']:
                         # print(response_data['response'], end='', flush=True)
+                        logging.debug(response_data)
                         return response_data['response']
 
     def getDefaultResponse(self) -> any:
