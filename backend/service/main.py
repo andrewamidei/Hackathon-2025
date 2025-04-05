@@ -2,51 +2,52 @@ import os
 import asyncio
 from flask import Flask, jsonify, request
 from flask_cors import CORS
+import logging
+import json
 
 from database import Database
 from models.BlogPost import BlogPost, BlogPostVerificationError
 from controller import LLmanager
-import mysql.connector
-import logging
-
 
 logging.basicConfig(level=logging.DEBUG)
 
-
-    
-
 server = Flask(__name__)
 CORS(server)
-conn = None
 
-# @server.route('/')
-# def listBlogs():
-#     global conn
-#     if not conn:
-#         conn = DBManager(password_file='/run/secrets/db-password')
-#         conn.populate_db()
-#     result = conn.query_blog_posts()
+# Message storage structure: { username: [messages] }
+message_queue = {}
 
-#     if result:
-#         return jsonify(result)
-#     else:
-#         return jsonify({'error': "Error querying blogs."}), 404
+@server.route('/api/chat', methods=['POST'])
+def handle_chat():
+    user_data = request.get_json()
+    logging.debug(f"Received chat request: {user_data}")
 
-# @server.route('/<int:post_id>')
-# def listBlog(post_id):
-#     global conn
-#     logging.debug(f'Received request for post_id: {post_id}')
-#     if not conn:
-#         conn = DBManager(password_file='/run/secrets/db-password')
-#         conn.populate_db()
-
-#     result = conn.query_blog_post(post_id=post_id)
-
-#     if result:
-#         return jsonify(result)
-#     else:
-#         return jsonify({'error': "Error querying blog"}), 404
-
+    # Sending a message
+    if 'sendAddress' in user_data and 'message' in user_data:
+        address = user_data['sendAddress']
+        message = user_data['message']
+        
+        if address not in message_queue:
+            message_queue[address] = []
+            
+        message_queue[address].append(message)
+        logging.debug(f"Message sent to {address}: {message}")
+        return jsonify({'status': 'Message sent successfully'}), 200
+    
+    # Checking for messages
+    elif 'username' in user_data:
+        username = user_data['username']
+        messages = message_queue.get(username, [])
+        
+        if messages:
+            # Get the next message and remove it from the queue
+            message = messages.pop(0)
+            logging.debug(f"Delivering message to {username}: {message}")
+            return jsonify({'message': message}), 200
+            
+        return jsonify({'message': 'No new messages'}), 200
+    
+    return jsonify({'error': 'Invalid request'}), 400
 
 @server.route('/api/debug/database', methods=['GET'])
 def debugDB():
@@ -134,4 +135,4 @@ def PostContacts():
 
 
 if __name__ == '__main__':
-    server.run()
+    server.run(host='0.0.0.0', port=8080, debug=True)

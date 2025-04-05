@@ -24,14 +24,31 @@ class ChatView extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Chat'),
+        title: BlocBuilder<ChatBloc, ChatState>(
+          builder: (context, state) {
+            return Text('Chat as ${chatBloc.currentUser}');
+          },
+        ),
         centerTitle: true,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.switch_account),
+            onPressed: chatBloc.switchUser,
+            tooltip: 'Switch user for testing',
+          ),
+        ],
       ),
       body: Column(
         children: [
           Expanded(
             child: BlocBuilder<ChatBloc, ChatState>(
               builder: (context, state) {
+                if (state.messages.isEmpty) {
+                  return const Center(
+                    child: Text('No messages yet'),
+                  );
+                }
+                
                 return ListView.builder(
                   reverse: true,
                   padding: const EdgeInsets.all(16),
@@ -43,6 +60,21 @@ class ChatView extends StatelessWidget {
                 );
               },
             ),
+          ),
+          BlocBuilder<ChatBloc, ChatState>(
+            builder: (context, state) {
+              if (state.error != null) {
+                return Container(
+                  color: Colors.red.shade100,
+                  padding: const EdgeInsets.all(8),
+                  child: Text(
+                    state.error!,
+                    style: TextStyle(color: Colors.red.shade900),
+                  ),
+                );
+              }
+              return const SizedBox.shrink();
+            },
           ),
           if (context.select((ChatBloc bloc) => bloc.state.isLoading))
             const Padding(

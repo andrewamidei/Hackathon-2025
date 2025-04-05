@@ -96,6 +96,31 @@ class LoginView extends StatelessWidget {
             },
             child: const Text('Login'),
             ),
+
+            const SizedBox(height: 16.0),
+
+            // Login Button
+            ElevatedButton(
+            onPressed: () async {
+                // Check if username or password is empty
+                if (username.isEmpty || password.isEmpty) {
+                // Show an error message using a SnackBar
+                ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                    content: Text('Please enter both username and password'),
+                    backgroundColor: Colors.red,
+                    ),
+                );
+                } else {
+                    await loginBloc.signUpUser(username, password);
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const ChatPage()),
+                    );
+                }
+            },
+            child: const Text('Sign Up'),
+            ),
           ],
         ),
       ),
