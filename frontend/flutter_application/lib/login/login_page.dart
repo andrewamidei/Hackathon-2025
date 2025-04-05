@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application/chat/chat_page.dart';
+import 'package:flutter_application/navigation/navigation_bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_application/contacts/contacts_page.dart'; 
 import 'login_bloc.dart';
 
 
@@ -86,10 +88,15 @@ class LoginView extends StatelessWidget {
                                 backgroundColor: Colors.red,
                             ),
                         );
-                    } else {
-                        Navigator.push(
+                    }  else {
+                        // Store the username in the navigation state
+                        Navigator.pushReplacement(
                             context,
-                            MaterialPageRoute(builder: (context) => const ChatPage()),
+                            MaterialPageRoute(
+                                builder: (context) => ContactsPage(
+                                    currentUser: username,  // Pass the actual username
+                                ),
+                            ),
                         );
                     }
                 }

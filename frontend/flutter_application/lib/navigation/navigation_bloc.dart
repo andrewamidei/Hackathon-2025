@@ -1,23 +1,24 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-enum BottomNaviEvent{chat, contacts, settings, login}
+enum BottomNaviEvent {
+  login,
+  contacts,
+  settings,
+  chat,
+}
 
-class BottomNaviBloc extends Bloc<BottomNaviEvent, int>{
-  BottomNaviBloc() : super (0) {
+class BottomNaviBloc extends Bloc<BottomNaviEvent, int> {
+  BottomNaviBloc() : super(0) {
     on<BottomNaviEvent>((event, emit) {
       switch (event) {
-        case BottomNaviEvent.chat:
+        case BottomNaviEvent.login:
           emit(0);
-          break;
         case BottomNaviEvent.contacts:
           emit(1);
-          break;
         case BottomNaviEvent.settings:
           emit(2);
-          break;
-        case BottomNaviEvent.login:
+        case BottomNaviEvent.chat:
           emit(3);
-          break;
       }
     });
   }

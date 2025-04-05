@@ -2,21 +2,36 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'chat_bloc.dart';
 import 'message.dart';
+import 'chat_state.dart';
 
 class ChatPage extends StatelessWidget {
-  const ChatPage({super.key});
+  final String currentUser;
+  final String receiver;
+
+  const ChatPage({
+    super.key,
+    required this.currentUser,
+    required this.receiver,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => ChatBloc(),
-      child: const ChatView(),
+    return BlocProvider<ChatBloc>(  // Add the explicit type here
+      create: (context) => ChatBloc(
+        currentUser: currentUser,
+        receiver: receiver,
+      ),
+      child: ChatView(receiver: receiver),
     );
   }
 }
 
 class ChatView extends StatelessWidget {
-  const ChatView({super.key});
+  final String receiver;
+  const ChatView({
+    super.key,
+    required this.receiver,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -87,6 +102,7 @@ class ChatView extends StatelessWidget {
     );
   }
 }
+
 
 class MessageBubble extends StatelessWidget {
   final Message message;

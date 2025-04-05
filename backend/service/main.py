@@ -40,11 +40,13 @@ def process_messages():
         try:
             message = message_queue.get_next_raw_message()
             if message:
+                logging.info(f"Processing message: {message.sender}")
                 with get_db() as db:
                     processed_content = llm_manager.llmQuery(
                         message=message.content,
                         sender=message.sender
                     )
+                    logging.info(f"Processed content: {processed_content}")
                     
                     processed_message = ChatMessage(
                         sender=message.sender,
@@ -56,6 +58,7 @@ def process_messages():
                     
                     db.add_chat(message.sender, message.receiver, processed_content)
                     message_queue.add_processed_message(processed_message)
+                    logging.info(f"Message processed and queued for {message.receiver}")
         except Exception as e:
             logging.error(f"Error processing message: {e}")
         time.sleep(0.1)

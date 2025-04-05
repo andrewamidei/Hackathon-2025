@@ -12,7 +12,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       // home: ChatPage(),
-      home: NavigationPage(),
+      home: NavigationPage(username: "",),
     );
   }
 }
