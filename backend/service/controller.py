@@ -21,7 +21,7 @@ class LLmanager:
         self.discTwo = "NonOffensive"
         self.message = "hello"
         # make this message sound more {self.discOne} and {self.discTwo} message:{self.message} only provide the modified message 
-        self.prompt = (f"hello ")
+        self.prompt = (f"make this message sound more {self.discOne} and {self.discTwo} message:{self.message} only provide the modified message ")
     def llmQuery(self, message: str,) -> any:
         # Use the generate function for a one-off prompt
         self.message = message
