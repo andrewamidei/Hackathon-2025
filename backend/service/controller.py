@@ -19,13 +19,27 @@ class LLmanager:
         self.url = url
         self.discOne = "MAD"
         self.discTwo = "MEAN"
+        self.message = "hello how are you?"
+        self.prompt =  (
+            f"You are an AI that takes a message and rewrites it to sound extremely \"{self.discTwo}\" and \"{self.discOne}\".\n\n"
+            f"The original message is:\n"
+            f"\"{self.message}\"\n\n"
+            f"Only respond in this exact JSON format:\n"
+            f"```\n"
+            f"{{\n"
+            f"  \"response\": \"<your transformed {self.discTwo} and {self.discOne} version of the message>\"\n"
+            f"}}\n"
+            f"```"
+        )
+
 
     def llmQuery(self, message: str,) -> any:
         # Use the generate function for a one-off prompt
+        self.message = message
         prompt = (
             f"You are an AI that takes a message and rewrites it to sound extremely \"{self.discTwo}\" and \"{self.discOne}\".\n\n"
             f"The original message is:\n"
-            f"\"{message}\"\n\n"
+            f"\"{self.message}\"\n\n"
             f"Only respond in this exact JSON format:\n"
             f"```\n"
             f"{{\n"
