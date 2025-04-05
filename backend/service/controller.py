@@ -14,13 +14,13 @@ URL = 'http://192.168.8.137:11434/api/generate'
 
 
 class LLmanager:
-    def __init__(self, model= MODEL, url= URL):
+    def __init__(self, model=MODEL, url=URL):
         self.model = model
         self.url = url
         self.discOne = "MAD"
         self.discTwo = "MEAN"
         self.message = "hello how are you?"
-        self.prompt =  (
+        self.prompt = (
             f"You are an AI that takes a message and rewrites it to sound extremely \"{self.discTwo}\" and \"{self.discOne}\".\n\n"
             f"The original message is:\n"
             f"\"{self.message}\"\n\n"
@@ -31,7 +31,6 @@ class LLmanager:
             f"}}\n"
             f"```"
         )
-
 
     def llmQuery(self, message: str,) -> any:
         # Use the generate function for a one-off prompt
@@ -49,7 +48,7 @@ class LLmanager:
             f"```"
         )
 
-        logging.debug(prompt) 
+        logging.debug(prompt)
         # stream is used to define wether items should be streamd one at at time (True) or all in one message (False)
         data = {'model': self.model, 'prompt': prompt, 'stream': False}
 
