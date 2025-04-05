@@ -15,7 +15,7 @@ db = Database("db-78n9n")
 
 
 unit_test = DB_unit_test(db)
-
+print("User Table: ")
 print(db.get_users())
 
 

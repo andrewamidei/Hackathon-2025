@@ -9,7 +9,7 @@ class Database:
     
     def connect_to_db(self):
         
-        
+
         self.connection = mysql.connector.connect(
             host='db',
             user='root',
@@ -96,6 +96,8 @@ class Database:
                                 )
                         ''')
             
+            
+            
             self.cursor.execute('INSERT INTO Contacts (userID, contact_user_id) VALUES ((SELECT userID FROM Users WHERE username = %s), (SELECT userID FROM Users WHERE username = %s))', (username, contact_username))
             self.cursor.execute('INSERT INTO Contacts (userID, contact_user_id) VALUES ((SELECT userID FROM Users WHERE username = %s), (SELECT userID FROM Users WHERE username = %s))', (contact_username, username))
 
@@ -146,6 +148,27 @@ class Database:
         try:
             self.cursor.execute('DROP TABLE IF EXISTS Users')
             self.cursor.execute('DROP TABLE IF EXISTS Contacts')
+            self.connection.commit()
+        except mysql.connector.Error as err:
+            print(f"Error: {err}")
+            self.connection.rollback()
+            
+            
+    def add_chat(self, username, contact_username, message):
+        try:
+            self.cursor.execute('''
+                                CREATE TABLE IF NOT EXISTS Chats (
+                                chatID INT AUTO_INCREMENT PRIMARY KEY,  
+                                senderID INT NOT NULL,
+                                receiverID INT NOT NULL,
+                                message TEXT NOT NULL,
+                                sent_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                                FOREIGN KEY (senderID) REFERENCES Users(userID),
+                                FOREIGN KEY (receiverID) REFERENCES Users(userID)
+                                )
+                        ''')
+            
+            self.cursor.execute('INSERT INTO Chats (senderID, receiverID, message) VALUES ((SELECT userID FROM Users WHERE username = %s), (SELECT userID FROM Users WHERE username = %s), %s)', (username, contact_username, message))
             self.connection.commit()
         except mysql.connector.Error as err:
             print(f"Error: {err}")
