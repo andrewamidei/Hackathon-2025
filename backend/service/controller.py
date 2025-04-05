@@ -23,8 +23,8 @@ class LLmanager:
 
         # Use the generate function for a one-off prompt
         # stream is used to define wether items should be streamd one at at time (True) or all in one message (False)
-        data = {'model': self.model, 'prompt': self.prompt, 'stream': False}
-        logging.debug(self.prompt)
+        data = {'model': self.model, 'prompt': prompt, 'stream': False}
+        logging.debug(prompt)
         with requests.post(self.url, json=data, stream=True) as response:
             for line in response.iter_lines():
                 if line:
