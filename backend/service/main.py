@@ -12,34 +12,19 @@ import logging
 
 db = Database("db-78n9n")
 
-db.truncate_table()
-db.drop_table()
-db.add_user("bob", "password")
-db.add_user("alice", "password")
-db.add_user("casey", "password")
 
-db.add_co
 
 unit_test = DB_unit_test(db)
 
 print(db.get_users())
 
-db.add_contact(username="bob", contact_username="alice")
-db.add_contact(username="bob", contact_username="alice")
-db.add_contact(username="bob", contact_username="bob")
-db.add_contact(username="bob", contact_username="casey")
-db.add_contact(username="alice", contact_username="bob")
-db.add_contact(username="alice", contact_username="casey")
-db.add_contact(username="casey", contact_username="bob")
-db.add_contact(username="casey", contact_username="alice")
 
-
-#unit_test.add_user_test("admin", "password")
-
+unit_test.add_user_test("admin", "password")
+unit_test.add_contact_test("admin", "admin")
 
 
 print("Contacts Table: ")
-print(db.get_contacts("bob"))
+print(db.get_contacts("alice"))
 print("Server started")
 
 logging.basicConfig(level=logging.DEBUG)
