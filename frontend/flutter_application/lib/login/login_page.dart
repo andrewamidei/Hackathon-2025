@@ -24,7 +24,9 @@ class LoginView extends StatelessWidget {
     @override
     Widget build(BuildContext context) {
         final loginBloc = BlocProvider.of<LoginBloc>(context);
-    
+        String username = "";
+        String password = "";
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Login'),
@@ -41,6 +43,9 @@ class LoginView extends StatelessWidget {
                 border: OutlineInputBorder(),
               ),
               keyboardType: TextInputType.emailAddress,
+              onChanged: (value) {
+                username = value;
+              }
             ),
             const SizedBox(height: 16.0),
 
@@ -51,16 +56,39 @@ class LoginView extends StatelessWidget {
                 border: OutlineInputBorder(),
               ),
               obscureText: true,
+              onChanged: (value) {
+                password = value;
+              },
             ),
             const SizedBox(height: 24.0),
 
             // Login Button
             ElevatedButton(
-              onPressed: () {
-                // Add login logic here
-                // backendBloc.add(LoginEvent());
-              },
-              child: const Text('Login'),
+            onPressed: () async {
+                // Check if username or password is empty
+                if (username.isEmpty || password.isEmpty) {
+                // Show an error message using a SnackBar
+                ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                    content: Text('Please enter both username and password'),
+                    backgroundColor: Colors.red,
+                    ),
+                );
+                } else {
+                // Proceed with login logic
+                final isValid = await loginBloc.verifyUser(username, password);
+                    if (!isValid) {
+                        // Show an error message if username or password is incorrect
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                                content: Text('Username or password is incorrect'),
+                                backgroundColor: Colors.red,
+                            ),
+                        );
+                    }
+                }
+            },
+            child: const Text('Login'),
             ),
           ],
         ),
