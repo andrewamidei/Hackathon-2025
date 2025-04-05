@@ -78,7 +78,7 @@ class LoginView extends StatelessWidget {
                 } else {
                 // Proceed with login logic
                 final isValid = await loginBloc.verifyUser(username, password);
-                    if (!isValid) {
+                    if (isValid != null)  {
                         // Show an error message if username or password is incorrect
                         ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(

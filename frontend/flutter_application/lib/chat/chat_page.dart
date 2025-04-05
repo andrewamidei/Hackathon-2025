@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'chat_bloc.dart';
 import 'message.dart';
 
-class ChatPage extends StatelessWidget {
+class ChatPage extends StatelessWidget{
   const ChatPage({super.key});
 
   @override
@@ -44,17 +44,16 @@ class ChatView extends StatelessWidget {
             child: BlocBuilder<ChatBloc, ChatState>(
               builder: (context, state) {
                 if (state.messages.isEmpty) {
-                  return const Center(
-                    child: Text('No messages yet'),
-                  );
+                  return const Center(child: Text('No messages yet'));
                 }
-                
+
                 return ListView.builder(
                   reverse: true,
                   padding: const EdgeInsets.all(16),
                   itemCount: state.messages.length,
                   itemBuilder: (context, index) {
-                    final message = state.messages[state.messages.length - 1 - index];
+                    final message =
+                        state.messages[state.messages.length - 1 - index];
                     return MessageBubble(message: message);
                   },
                 );
@@ -123,26 +122,25 @@ class ChatView extends StatelessWidget {
 class MessageBubble extends StatelessWidget {
   final Message message;
 
-  const MessageBubble({
-    super.key,
-    required this.message,
-  });
+  const MessageBubble({super.key, required this.message});
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: Align(
-        alignment: message.isUser ? Alignment.centerRight : Alignment.centerLeft,
+        alignment:
+            message.isUser ? Alignment.centerRight : Alignment.centerLeft,
         child: Container(
           constraints: BoxConstraints(
             maxWidth: MediaQuery.of(context).size.width * 0.75,
           ),
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
           decoration: BoxDecoration(
-            color: message.isUser 
-                ? Theme.of(context).primaryColor
-                : Colors.grey.shade200,
+            color:
+                message.isUser
+                    ? Theme.of(context).primaryColor
+                    : Colors.grey.shade200,
             borderRadius: BorderRadius.circular(16),
           ),
           child: Text(
