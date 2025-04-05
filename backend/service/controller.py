@@ -9,7 +9,7 @@ serverip: str = "192.168.8.137"
 
 logging.basicConfig(level=logging.DEBUG)
 
-MODEL = 'llama2:7b'
+MODEL = 'gemma3'
 URL = 'http://192.168.8.137:11434/api/generate'
 
 
