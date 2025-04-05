@@ -1,81 +1,70 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
+import 'package:flutter/material.dart';
+import 'message.dart';
 
-const String url = 'http://192.168.8.137:8080/api/queryllm';
-// const String url = 'http://localhost:8080/api/queryllm';
+class ChatState {
+  final List<Message> messages;
+  final bool isLoading;
 
-class ChatBloc extends Cubit<String> {
-  ChatBloc() : super('');
+  ChatState({
+    required this.messages,
+    this.isLoading = false,
+  });
 
-  TextEditingController messageController = TextEditingController();
-
-  Future<void> sendData(/*String prompt*/) async {
-    String prompt = messageController.text;
-    if (prompt.isNotEmpty) { 
-      try {
-        
-        final response = await http.post(
-          Uri.parse(url),
-          headers:<String, String>{'Content-Type': 'application/json'},
-          body: jsonEncode(<String, dynamic>{'model': 'smollm2:135m', 'prompt': prompt}));
-
-          if (response.statusCode == 200) {
-            Map<String, dynamic> map = jsonDecode(response.body);
-            emit(map["response"]);
-            // emit(response.body);
-          } else {
-            emit('Failed to fetch data');
-          }
-      }
-      catch (e) {
-        emit('Failed to connect to the server.');
-      }
-      messageController.clear(); // Clear the text field after sending
-    }
-  }
-
-  Future<void> message(TextEditingController prompt) async {
-
+  ChatState copyWith({
+    List<Message>? messages,
+    bool? isLoading,
+  }) {
+    return ChatState(
+      messages: messages ?? this.messages,
+      isLoading: isLoading ?? this.isLoading,
+    );
   }
 }
 
+class ChatBloc extends Cubit<ChatState> {
+  final TextEditingController messageController = TextEditingController();
 
-// import 'package:flutter_bloc/flutter_bloc.dart';
-// import 'package:http/http.dart' as http;
-// import 'dart:convert';
+  ChatBloc() : super(ChatState(messages: []));
 
-// class BackendBloc extends Cubit<String> {
-//   BackendBloc() : super('');
+  void sendMessage() async {
+    if (messageController.text.trim().isEmpty) return;
 
-//   Future<void> fetchData() async {
-//     final response = await http.get(Uri.parse('http://localhost:5000/api/data'));
-//     if (response.statusCode == 200) {
-//       emit(response.body);
-//     } else {
-//       emit('Failed to fetch data');
-//     }
-//   }
+    final newMessage = Message(
+      content: messageController.text,
+      isUser: true,
+      timestamp: DateTime.now(),
+    );
 
-//   Future<void> sendData(String prompt) async {
-//     // just finished making this
-//     try {
-//       final response = await http.post(
-//         Uri.parse('http://localhost:5000/api/data'),
-//         headers:<String, String>{'Content-Type': 'application/json'},
-//         body: jsonEncode(<String, dynamic>{'model': 'smollm2:135m', 'prompt': prompt}));
+    // Add user message to the chat
+    emit(state.copyWith(
+      messages: [...state.messages, newMessage],
+      isLoading: true,
+    ));
 
-//         if (response.statusCode == 200) {
-//           Map<String, dynamic> map = jsonDecode(response.body);
-//           emit(map["response"]);
-//           // emit(response.body);
-//         } else {
-//           emit('Failed to fetch data');
-//         }
-//     }
-//     catch (e) {
-//       emit('Failed to connect to the server.');
-//     }
-//   }
-// }
+    // Clear the input field
+    messageController.clear();
+
+    try {
+      // Call your API here
+      // final response = await yourApiCall(newMessage.content);
+      
+      // Simulate API response for now
+      await Future.delayed(const Duration(seconds: 1));
+      final botResponse = Message(
+        content: "This is a bot response",
+        isUser: false,
+        timestamp: DateTime.now(),
+      );
+
+      // Add bot response to the chat
+      emit(state.copyWith(
+        messages: [...state.messages, botResponse],
+        isLoading: false,
+      ));
+    } catch (e) {
+      emit(state.copyWith(isLoading: false));
+      // Handle error
+    }
+  }
+}
