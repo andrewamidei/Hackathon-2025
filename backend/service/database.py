@@ -49,7 +49,7 @@ class Database:
             self.connection.rollback()
             return -1
         
-    def check_username_password(self, username, password) -> int:
+    def check_username_password(self, username, password, status) -> int:
         """
         This function checks if the username and password are correct.
         If the username does not exist, it adds the user to the database.
@@ -68,7 +68,7 @@ class Database:
 
         try:
             self.cursor.execute('SELECT COUNT(*) FROM Users WHERE username = %s', (username,))
-            if self.cursor.fetchone()[0] == 0:
+            if self.cursor.fetchone()[0] == 0 and status == 0:
                 self.add_user(username, password)
                 return 2
             self.cursor.execute('SELECT COUNT(*) FROM Users WHERE username = %s AND password = %s', (username, password))
@@ -114,6 +114,7 @@ class Database:
         - -1 - If the username and contact_username are the same.
         - 0 - If the contact is added successfully.
         - 1 - If the contact already exists.
+        - -2 - If the contact does not exist.
     """
 
         if(username == contact_username):
@@ -130,6 +131,16 @@ class Database:
                                 UNIQUE (userID, contact_user_id)
                                 )
                         ''')
+            
+            self.cursor.execute('SELECT COUNT(*) FROM Users WHERE username = %s', (contact_username,))
+            if self.cursor.fetchone()[0] == 0:
+                print("Contact does not exist.")
+                return -2
+            
+            self.cursor.execute('SELECT COUNT(*) FROM Users WHERE username = %s', (username,))
+            if self.cursor.fetchone()[0] == 0:
+                print("User does not exist.")
+                return -2
             
             
             

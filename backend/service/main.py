@@ -104,7 +104,7 @@ def PostLogin():
     # Return the response as JSON
     return jsonify({'response': response}), 200
 
-@server.route('/api/contacts ', methods=['POST'])
+@server.route('/api/contacts', methods=['POST'])
 def PostContacts():
     # Parse the incoming JSON data
     request_data = request.get_json()
@@ -131,7 +131,56 @@ def PostContacts():
     return jsonify({'response': response}), 200
 
 
+@server.route('/api/get/contacts', methods=['POST'])
+def GetContacts():
+    # Parse the incoming JSON data
+    request_data = request.get_json()
+    if not request_data or 'username' not in request_data:
+        return jsonify({'error': 'Invalid request, "username" is required'}), 400
 
+    # Extract the username and password from the request
+    username = request_data['username']
+
+    db = Database('db-78n9n')
+    db.connect_to_db()
+    contacts = db.get_contacts(username)
+
+    if contacts is None:
+        logging.warning("Error getting contacts")
+        return jsonify({'error': 'Error getting contacts'}), 400
+
+    response = {
+        'contacts': contacts
+    }
+
+    # Return the response as JSON
+    return jsonify({'response': response}), 200
+
+@server.route('/api/add/chat', methods=['POST'])
+def PostChat():
+    # Parse the incoming JSON data
+    request_data = request.get_json()
+    if not request_data or 'username' not in request_data or 'contact_username' not in request_data:
+        return jsonify({'error': 'Invalid request, "username" and "contact_username" are required'}), 400
+
+    # Extract the username and password from the request
+    username = request_data['username']
+    contact_username = request_data['contact_username']
+
+    db = Database('db-78n9n')
+    db.connect_to_db()
+    if(db.add_chat(username, contact_username) != 0):
+        logging.warning("Chat already exists")
+        return jsonify({'error': 'Chat already exists'}), 400
+
+    response = {
+        'message': 'Chat added successfully',
+        'username': username,
+        'contact_username': contact_username
+    }
+
+    # Return the response as JSON
+    return jsonify({'response': response}), 200
 
 if __name__ == '__main__':
     server.run()
