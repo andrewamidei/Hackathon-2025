@@ -36,13 +36,12 @@ class LLmanager:
         Output:
         <transformed message only – no explanation, no intro, no formatting>
         """
-        def llmQuery(self, message: str,) -> any:
+
+    def llmQuery(self, message: str,) -> any:
 
         # Use the generate function for a one-off prompt
-            self.message = message
-
-
-            self.prompt = f"""
+        self.message = message
+        self.prompt = f"""
           You are an AI that transforms customer messages for internal use.
 
           Your job is to take the original message below and rewrite it in a way that is more **{self.discOne.upper()}** and **{self.discTwo.upper()}** — while keeping the original meaning of the message the same.
@@ -52,7 +51,7 @@ class LLmanager:
         Only rephrase the message in a new tone and return the modified version **only**.
 
         Original Message:
-        "{message}"
+        "{self.message}"
 
         Output:
         <transformed message only – no explanation, no intro, no formatting>
