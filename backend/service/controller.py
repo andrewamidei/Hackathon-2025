@@ -23,10 +23,12 @@ class LLmanager:
         # make this message sound more {self.discOne} and {self.discTwo} message:{self.message} only provide the modified message 
         self.prompt = (f"make this message sound more {self.discOne} and {self.discTwo} \"message:{self.message}\" only provide the modified message ")
     def llmQuery(self, message: str,) -> any:
+
         # Use the generate function for a one-off prompt
         self.message = message
 
 
+        self.prompt = (f"make this message sound more {self.discOne} and {self.discTwo} \"message:{self.message}\" only provide the modified message ")
         # stream is used to define wether items should be streamd one at at time (True) or all in one message (False)
         data = {'model': self.model, 'prompt': self.prompt, 'stream': False}
         logging.debug(self.prompt)
