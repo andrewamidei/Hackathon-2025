@@ -5,7 +5,6 @@ class DB_unit_test:
     def __init__(self, db):
         self.db = db
         self.db.connect_to_db()
-        self.db.truncate_table()
     
 
     def add_user_test(self, username, password):
@@ -67,3 +66,23 @@ class DB_unit_test:
         #     except mysql.connector.Error as err:
         #         print(f"Error: {err}")
         #         print("Chat already exists")
+    def user_login_signup_test(self):
+        print("Testing for login and signup")
+        for i in range(5):
+            try:
+                self.db.check_username_password('bob' + str(i), 'password', 0)
+                self.db.check_username_password('bob' + str(i), 'password', 0)
+                print("User added successfully")
+            except mysql.connector.Error as err:
+                print(f"Error: {err}")
+                print("User already exists")
+
+
+        try:
+            self.db.check_username_password('bob' , 'password', 1)
+            self.db.check_username_password('bob1' , 'password', 1)
+            self.db.check_username_password('bob2' , 'password1', 1)
+            self.db.check_username_password('bob3' , 'password1', 1)
+        except mysql.connector.Error as err:
+            print(f"Error: {err}")
+            print("User already exists")

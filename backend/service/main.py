@@ -16,9 +16,11 @@ db = Database('db-78n9n')
 db.connect_to_db()  
 
 unit_test = DB_unit_test(db)
-unit_test.add_chats('bob', 'alice')
+#unit_test.add_chats('bob', 'alice')
+unit_test.user_login_signup_test()
 
-print(db.get_chats('bob', 'alice', 20))
+
+#print(db.get_chats('bob', 'alice', 20))
 
     
 
@@ -96,12 +98,37 @@ def PostLogin():
     db = Database('db-78n9n')
     db.connect_to_db()
 
-    if(db.check_username_password(username, password) != 0):
+    if(db.check_username_password(username, password, 1) != 0):
         logging.warning("User already exists")
         return jsonify({'error': 'Username already exists'}), 400
     
     logging.debug(db.get_users())
 
+
+    response = {
+        'message': 'User added successfully',
+        'username': username
+    }
+
+    # Return the response as JSON
+    return jsonify({'response': response}), 200
+
+@server.route('/api/signup', methods=['POST'])
+def PostSignup():
+    # Parse the incoming JSON data
+    request_data = request.get_json()
+    if not request_data or 'username' not in request_data or 'password' not in request_data:
+        return jsonify({'error': 'Invalid request, "username" and "password" are required'}), 400
+
+    # Extract the username and password from the request
+    username = request_data['username']
+    password = request_data['password']
+
+    db = Database('db-78n9n')
+    db.connect_to_db()
+    if(db.check_username_password(username, password, 0) != 0):
+        logging.warning("User already exists")
+        return jsonify({'error': 'Username already exists'}), 400
 
     response = {
         'message': 'User added successfully',
