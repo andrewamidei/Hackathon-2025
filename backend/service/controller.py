@@ -46,7 +46,7 @@ class LLmanager:
         # Generate the response and send it to the UI
         model = self.model  # local model
         message = "hi there i enjoyed our time"
-        prompt = f"Take this message and make it more {self.discOne} and {self.discTwo} {message} create only one message DO NOT RESPOND TO THE MESSAGE ONLY MAKE IT MORE {self.discOne} and {self.discTwo} dont add an explanation only send back the modified message"
+        prompt = f"Take this message and filter for our service agents it to make it more {self.discOne} and {self.discTwo} {message} create only one message DO NOT RESPOND TO THE MESSAGE ONLY MAKE IT MORE {self.discOne} and {self.discTwo} dont add an explanation only send back the modified message"
         url = self.url
 
         response = self.llmQuery(model, prompt, url)
