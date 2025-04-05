@@ -28,11 +28,10 @@ class Database:
     def add_user(self, username, password):
         try:
             self.cursor.execute('''
-                                CREATE TABLE IF NOT EXISTS users (
+                                CREATE TABLE IF NOT EXISTS Users (
                                 userID INT AUTO_INCREMENT PRIMARY KEY, 
-                                username VARCHAR(255), 
-                                password VARCHAR(255),
-                                CONSTRAINT unique_id UNIQUE (userID),
+                                username VARCHAR(255) NOT NULL , 
+                                password VARCHAR(255) NOT NULL,
                                 CONSTRAINT unique_username UNIQUE (username)
                                 )
                         ''')
@@ -64,20 +63,20 @@ class Database:
             
             
             
-    def add_Contact(self, username):
+    def add_Contact(self, username, contact_username):
         try:
             self.cursor.execute('''
-                                CREATE TABLE IF NOT EXISTS contacts (
-                                contactID INT AUTO_INCREMENT PRIMARY KEY, 
-                                name VARCHAR(255), 
-                                userID INT,
-                                CONSTRAINT FOREIGN KEY (userID) REFERENCES users(userID),
-                                CONSTRAINT unique_id UNIQUE (contactID),
-                                CONSTRAINT unique_name UNIQUE (username)
+                                CREATE TABLE IF NOT EXISTS Contacts (
+                                contactID INT AUTO_INCREMENT PRIMARY KEY,  
+                                userID INT NOT NULL,
+                                contact_user_id INT NOT NULL,
+                                FOREIGN KEY (userID) REFERENCES Users(userID),
+                                FOREIGN KEY (contact_user_id) REFERENCES Users(userID),
+                                UNIQUE (userID, contact_user_id)
                                 )
                         ''')
             
-            self.cursor.execute('INSERT INTO contacts (name) VALUES (%s)', (username,))
+            self.cursor.execute('INSERT INTO contacts (userID, contact_user_id) VALUES (SELECT userID FROM Users WHERE username = %s, SELECT userID FROM Users WHERE username = %s)', (username, contact_username))
             self.connection.commit()
         except mysql.connector.Error as err:
             print(f"Error: {err}")
