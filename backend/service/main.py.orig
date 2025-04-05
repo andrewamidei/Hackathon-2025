@@ -7,6 +7,7 @@ import json
 from database import Database
 from models.BlogPost import BlogPost, BlogPostVerificationError
 from controller import LLmanager
+<<<<<<< HEAD
 from controller import msg_handler
 import mysql.connector
 import asyncio
@@ -15,9 +16,25 @@ import logging
 
 logging.basicConfig(level=logging.DEBUG)
 
+
+def run_async(coro):
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+    try:
+        return loop.run_until_complete(coro)
+    finally:
+        loop.close()
+
+=======
+
+logging.basicConfig(level=logging.DEBUG)
+
+>>>>>>> f6f07a727b0ea571d26128571c8f582124a73d31
 server = Flask(__name__)
 CORS(server)
 
+<<<<<<< HEAD
+=======
 # Message storage structure: { username: [messages] }
 message_queue = {}
 
@@ -53,6 +70,7 @@ def handle_chat():
     
     return jsonify({'error': 'Invalid request'}), 400
 
+>>>>>>> f6f07a727b0ea571d26128571c8f582124a73d31
 @server.route('/api/debug/database', methods=['GET'])
 def debugDB():
     pass
