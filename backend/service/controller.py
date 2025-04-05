@@ -40,6 +40,7 @@ class LLmanager:
         # data = {'message': response}
         # return jsonify(data)
 
+
         return response
 
     def PostNewQuery(self) -> json:
@@ -59,3 +60,4 @@ class LLmanager:
 
         # Return the response as JSON
         return jsonify({'response': response})
+
