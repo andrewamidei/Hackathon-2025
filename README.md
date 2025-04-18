@@ -25,7 +25,7 @@ This is a full-stack application featuring a **Flutter frontend** and a **Python
 
 ## 📂 Project Structure
 
-
+```
 project-root/
 ├── backend/
 │   ├── app/                 # Python application code
@@ -46,7 +46,7 @@ project-root/
 │       ├── pubspec.yaml     # Flutter project dependencies & metadata
 │       ├── Dockerfile       # Frontend Dockerfile (optional, e.g., for web build)
 │       └── README.md        # Flutter specific README (if present)
-
+```
 
 ---
 
