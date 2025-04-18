@@ -21,6 +21,7 @@ CORS(server)
 # Message storage structure: { username: [messages] }
 message_queue = {}
 
+
 @server.route('/api/chat', methods=['POST'])
 def handle_chat():
     user_data = request.get_json()
@@ -30,32 +31,34 @@ def handle_chat():
     if 'sendAddress' in user_data and 'message' in user_data:
         address = user_data['sendAddress']
         message = user_data['message']
-        
+
         if address not in message_queue:
             message_queue[address] = []
-            
+
         message_queue[address].append(message)
         logging.debug(f"Message sent to {address}: {message}")
         return jsonify({'status': 'Message sent successfully'}), 200
-    
+
     # Checking for messages
     elif 'username' in user_data:
         username = user_data['username']
         messages = message_queue.get(username, [])
-        
+
         if messages:
             # Get the next message and remove it from the queue
             message = messages.pop(0)
             logging.debug(f"Delivering message to {username}: {message}")
             return jsonify({'message': message}), 200
-            
+
         return jsonify({'message': 'No new messages'}), 200
-    
+
     return jsonify({'error': 'Invalid request'}), 400
+
 
 @server.route('/api/debug/database', methods=['GET'])
 def debugDB():
     pass
+
 
 @server.route('/api/queryllm', methods=['POST'])
 def PostQuery():
@@ -68,19 +71,19 @@ def PostQuery():
         # Extract the prompt from the request
         prompt = request_data['prompt']
         rate_prompt = request_data['rate_prompt']
-    #MODEL = 'mistral'
-    #URL = 'http://192.168.8.137:11434/api/generate'
+    # MODEL = 'mistral'
+    # URL = 'http://192.168.8.137:11434/api/generate'
 
         llm_manager_gpu = LLmanager(model="mistral", url='http://192.168.8.137:11434/api/generate')
         llm_manager_cpu = LLmanager(model="gemma:2b", url='http://192.168.8.137:11435/api/generate')
         llm_feeder = msg_handler(LLM_gpu=llm_manager_gpu, LLM_cpu=llm_manager_cpu)
         llm_feeder.feed("1", prompt)
         score = llm_feeder.rate("1", rate_prompt)
-        response =  llm_feeder.consume()
+        response = llm_feeder.consume()
 
-        #response = llm_manager.llmQuery(message=prompt)
+        # response = llm_manager.llmQuery(message=prompt)
         # Return the response as JSON
-        return jsonify({'response': response ,'score': score}), 200
+        return jsonify({'response': response, 'score': score}), 200
     except Exception as e:
         logging.error(f"Error in PostQuery: {str(e)}")
         return jsonify({'error': str(e)}), 500
@@ -105,13 +108,11 @@ def PostLogin():
     db = Database('db-78n9n')
     db.connect_to_db()
 
-    if(db.check_username_password(username, password) != 0):
+    if (db.check_username_password(username, password) != 0):
         logging.warning("User already exists")
         return jsonify({'error': 'Username already exists'}), 400
-    
+
     logging.debug(db.get_users())
-
-
     response = {
         'message': 'User added successfully',
         'username': username
@@ -119,6 +120,7 @@ def PostLogin():
 
     # Return the response as JSON
     return jsonify({'response': response}), 200
+
 
 @server.route('/api/contacts ', methods=['POST'])
 def PostContacts():
@@ -133,7 +135,7 @@ def PostContacts():
 
     db = Database('db-78n9n')
     db.connect_to_db()
-    if(db.add_contact(username, contact_username) != 0):
+    if (db.add_contact(username, contact_username) != 0):
         logging.warning("Contact already exists")
         return jsonify({'error': 'Contact already exists'}), 400
 
@@ -145,8 +147,6 @@ def PostContacts():
 
     # Return the response as JSON
     return jsonify({'response': response}), 200
-
-
 
 
 if __name__ == '__main__':
