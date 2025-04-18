@@ -1,5 +1,5 @@
 # 🚀 HACKATHON PROJECT 2025
-Self help
+# Self help
 The chat support app straight out of your wildest dystopian dreams.
 
 What is it?
