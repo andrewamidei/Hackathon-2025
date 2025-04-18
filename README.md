@@ -25,7 +25,7 @@ This is a full-stack application featuring a **Flutter frontend** and a **Python
 
 ## 📂 Project Structure
 
-```
+
 project-root/
 ├── backend/
 │   ├── app/                 # Python application code
@@ -37,16 +37,16 @@ project-root/
 │       ├── ios/             # iOS specific files & build logic
 │       ├── web/             # Web specific files (index.html, etc.)
 │       ├── lib/             # Core Flutter application code (Dart)
-│       │   ├── chat/        # Example: Chat feature module
-│       │   ├── login/       # Example: Login feature module
-│       │   ├── navigation/  # Example: Navigation logic
-│       │   ├── settings/    # Example: Settings feature module
-│       │   ├── theme/       # Example: Theme logic
+│       │   ├── chat/        # Chat feature module
+│       │   ├── login/       # Login feature module
+│       │   ├── navigation/  # Navigation logic
+│       │   ├── settings/    # Settings feature module
+│       │   ├── theme/       # Theme logic
 │       │   └── main.dart    # Main application entry point
 │       ├── pubspec.yaml     # Flutter project dependencies & metadata
 │       ├── Dockerfile       # Frontend Dockerfile (optional, e.g., for web build)
 │       └── README.md        # Flutter specific README (if present)
-```
+
 
 ---
 
