@@ -97,20 +97,9 @@ The build output will be in `build/web` for web builds.
 
 ---
 
-## ⚙️ Configuration
-
-Set environment variables such as:
-
-- `OLLAMA_API_BASE_URL`
-- Backend API URLs for Flutter
-
-These help manage connections between frontend, backend, and model-serving services.
-
----
-
 ## 🔗 API & Proxy
 
-Our project uses hard coded end points as this was a HACKATHON project in
+Our project uses hard coded end points as this was a hackathon project in
 
 - Update main.py llm manager cpu and gpu  
 
