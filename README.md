@@ -44,8 +44,8 @@ project-root/
 │       │   ├── theme/       # Theme logic
 │       │   └── main.dart    # Main application entry point
 │       ├── pubspec.yaml     # Flutter project dependencies & metadata
-│       ├── Dockerfile       # Frontend Dockerfile (optional, e.g., for web build)
-│       └── README.md        # Flutter specific README (if present)
+│       └── Dockerfile       # Frontend Dockerfile (optional, e.g., for web build)
+│      
 ```
 
 ---
