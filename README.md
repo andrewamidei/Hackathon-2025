@@ -43,8 +43,8 @@ project-root/
 │       │   ├── settings/    # Settings feature module
 │       │   ├── theme/       # Theme logic
 │       │   └── main.dart    # Main application entry point
-│       ├── pubspec.yaml     # Flutter project dependencies & metadata
-│       └── Dockerfile       # Frontend Dockerfile (optional, e.g., for web build)
+│       └── pubspec.yaml     # Flutter project dependencies & metadata
+│      
 │      
 ```
 
